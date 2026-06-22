@@ -125,18 +125,16 @@ export async function syncLiliKnowledgeToDatabase(): Promise<{ count: number }> 
       where: { sourceType: { in: ["course", "site", "faq", "policy"] } },
     });
 
-    for (const chunk of chunks) {
-      await tx.knowledgeChunk.create({
-        data: {
-          sourceType: chunk.sourceType,
-          sourceId: chunk.sourceId ?? null,
-          title: chunk.title,
-          content: chunk.content,
-          priority: chunk.priority,
-          active: true,
-        },
-      });
-    }
+    await tx.knowledgeChunk.createMany({
+      data: chunks.map((chunk) => ({
+        sourceType: chunk.sourceType,
+        sourceId: chunk.sourceId ?? null,
+        title: chunk.title,
+        content: chunk.content,
+        priority: chunk.priority,
+        active: true,
+      })),
+    });
   });
 
   return { count: chunks.length };
