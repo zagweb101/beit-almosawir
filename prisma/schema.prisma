@@ -1,0 +1,61 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model CourseOverride {
+  slug           String   @id
+  name           String?
+  priceLabel     String?
+  scheduleLabel  String?
+  durationDays   Int?
+  totalHours     Int?
+  dailyHours     Int?
+  instructorName String?
+  level          String?
+  location       String?
+  trainingType   String?
+  heroSubtitle   String?
+  updatedAt      DateTime @updatedAt
+}
+
+model CustomCourse {
+  slug           String   @id
+  name           String
+  priceLabel     String
+  scheduleLabel  String
+  durationDays   Int
+  totalHours     Int
+  dailyHours     Int
+  instructorName String   @default("")
+  level          String
+  location       String
+  trainingType   String
+  heroSubtitle   String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model DeletedCourse {
+  slug      String   @id
+  deletedAt DateTime @default(now())
+}
+
+model KnowledgeChunk {
+  id         String   @id @default(cuid())
+  sourceType String
+  sourceId   String?
+  title      String
+  content    String
+  priority   Int      @default(0)
+  active     Boolean  @default(true)
+  updatedAt  DateTime @updatedAt
+  createdAt  DateTime @default(now())
+
+  @@index([sourceType, sourceId])
+  @@index([active])
+}

@@ -1,0 +1,282 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-gold: var(--gold);
+  --font-sans: "Tajawal", "Cairo", system-ui, sans-serif;
+  --font-display: "Cairo", "Tajawal", system-ui, sans-serif;
+}
+
+:root {
+  --radius: 0.75rem;
+
+  /* Brand identity from logo: deep magenta → violet */
+  --brand-magenta: oklch(0.58 0.26 350);
+  --brand-violet: oklch(0.4 0.22 315);
+  --brand-deep: oklch(0.22 0.14 310);
+  --gold: oklch(0.82 0.13 85);
+
+  --background: oklch(0.1 0.02 305);
+  --foreground: oklch(0.97 0.01 320);
+
+  --card: oklch(0.14 0.04 308);
+  --card-foreground: oklch(0.97 0.01 320);
+
+  --popover: oklch(0.14 0.04 308);
+  --popover-foreground: oklch(0.97 0.01 320);
+
+  --primary: var(--brand-magenta);
+  --primary-foreground: oklch(0.99 0 0);
+
+  --secondary: oklch(0.2 0.06 310);
+  --secondary-foreground: oklch(0.97 0.01 320);
+
+  --muted: oklch(0.18 0.04 310);
+  --muted-foreground: oklch(0.72 0.03 320);
+
+  --accent: var(--brand-violet);
+  --accent-foreground: oklch(0.99 0 0);
+
+  --destructive: oklch(0.6 0.22 25);
+  --destructive-foreground: oklch(0.99 0 0);
+
+  --border: oklch(0.27 0.06 310 / 60%);
+  --input: oklch(0.22 0.05 310);
+  --ring: var(--brand-magenta);
+
+  /* Signature gradients & shadows */
+  --gradient-brand: linear-gradient(135deg, oklch(0.58 0.26 350), oklch(0.38 0.24 310));
+  --gradient-glow: radial-gradient(60% 60% at 50% 0%, oklch(0.58 0.26 350 / 0.35), transparent 70%);
+  --gradient-hero: linear-gradient(180deg, oklch(0.1 0.02 305 / 0.2), oklch(0.1 0.02 305 / 0.95));
+  --shadow-glow: 0 20px 60px -20px oklch(0.58 0.26 350 / 0.55);
+  --shadow-elegant: 0 30px 80px -30px oklch(0 0 0 / 0.7);
+
+  --transition-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.dark {
+  /* same — single dark theme */
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    background-image:
+      radial-gradient(40% 30% at 90% 0%, oklch(0.4 0.22 315 / 0.18), transparent 60%),
+      radial-gradient(50% 40% at 0% 20%, oklch(0.58 0.26 350 / 0.12), transparent 60%);
+    background-attachment: fixed;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+  }
+}
+
+@layer components {
+  .text-gradient {
+    background: var(--gradient-brand);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .bg-gradient-brand {
+    background: var(--gradient-brand);
+  }
+  .glow {
+    box-shadow: var(--shadow-glow);
+  }
+  .card-elegant {
+    background: linear-gradient(180deg, oklch(0.16 0.05 310 / 0.9), oklch(0.12 0.04 308 / 0.9));
+    border: 1px solid oklch(0.3 0.08 320 / 0.4);
+    backdrop-filter: blur(8px);
+  }
+  .btn-hero {
+    background: var(--gradient-brand);
+    color: var(--primary-foreground);
+    box-shadow: var(--shadow-glow);
+    transition:
+      transform 0.4s var(--transition-smooth),
+      box-shadow 0.4s var(--transition-smooth);
+  }
+  .btn-hero:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 30px 80px -20px oklch(0.58 0.26 350 / 0.7);
+  }
+  .btn-outline-brand {
+    border: 1px solid oklch(0.58 0.26 350 / 0.5);
+    color: var(--foreground);
+    background: oklch(0.2 0.06 310 / 0.4);
+    transition: all 0.3s var(--transition-smooth);
+  }
+  .btn-outline-brand:hover {
+    background: oklch(0.58 0.26 350 / 0.15);
+    border-color: oklch(0.58 0.26 350);
+  }
+
+  .divider-brand {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, oklch(0.58 0.26 350 / 0.6), transparent);
+  }
+
+  .course-page {
+    overflow-x: clip;
+    --course-muted: oklch(0.8 0.03 320);
+    --course-section-y: clamp(2.5rem, 5vw, 4rem);
+  }
+
+  .course-page .course-muted {
+    color: var(--course-muted);
+  }
+
+  .course-shell {
+    width: 100%;
+    max-width: 1280px;
+    margin-inline: auto;
+    padding-inline: 1rem;
+  }
+
+  @media (min-width: 375px) {
+    .course-shell {
+      padding-inline: 1.25rem;
+    }
+  }
+
+  @media (min-width: 540px) {
+    .course-shell {
+      padding-inline: 1.5rem;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .course-shell {
+      padding-inline: 2rem;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .course-shell {
+      padding-inline: 3rem;
+    }
+  }
+
+  .course-section {
+    padding-block: var(--course-section-y);
+    min-width: 0;
+  }
+
+  .course-h1 {
+    font-size: clamp(1.75rem, 7vw, 3.75rem);
+    line-height: 1.2;
+    text-wrap: balance;
+  }
+
+  .course-h2 {
+    font-size: clamp(1.5rem, 5vw, 2.75rem);
+    line-height: 1.25;
+    text-wrap: balance;
+  }
+
+  .course-kicker {
+    font-size: max(0.875rem, 14px);
+  }
+
+  .course-card {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .course-page p,
+  .course-page li,
+  .course-page .text-base {
+    font-size: max(1rem, 16px);
+    line-height: 1.8;
+  }
+
+  .course-page .course-answer {
+    font-size: max(0.9375rem, 15px);
+    line-height: 1.8;
+  }
+
+  .course-page .text-sm {
+    font-size: max(0.875rem, 14px);
+    line-height: 1.7;
+  }
+
+  .course-btn {
+    min-height: 3rem;
+  }
+
+  .course-page .text-xs {
+    font-size: max(0.75rem, 12px);
+    line-height: 1.5;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .course-page .motion-safe\:transition-none {
+      transition: none !important;
+    }
+  }
+}
+
+.admin-input {
+  @apply w-full min-h-11 rounded-xl border border-border/60 bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring;
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .admin-print-area,
+  .admin-print-area * {
+    visibility: visible;
+  }
+  .admin-print-area {
+    position: absolute;
+    inset: 0;
+    padding: 1rem;
+  }
+  .admin-no-print {
+    display: none !important;
+  }
+}
