@@ -25,6 +25,7 @@ import { Route as CoursesLightingMasteryRouteImport } from './routes/courses/lig
 import { Route as CoursesBeautyPhotographyRouteImport } from './routes/courses/beauty-photography'
 import { Route as CoursesSlugRouteImport } from './routes/courses/$slug'
 import { Route as AdminLoginRouteImport } from './routes/admin/login'
+import { Route as AdminInstructorsRouteImport } from './routes/admin/instructors'
 import { Route as AdminCoursesIndexRouteImport } from './routes/admin/courses/index'
 import { Route as AdminCoursesNewRouteImport } from './routes/admin/courses/new'
 import { Route as AdminCoursesSlugRouteImport } from './routes/admin/courses/$slug'
@@ -112,6 +113,11 @@ const AdminLoginRoute = AdminLoginRouteImport.update({
   path: '/admin/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminInstructorsRoute = AdminInstructorsRouteImport.update({
+  id: '/admin/instructors',
+  path: '/admin/instructors',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminCoursesIndexRoute = AdminCoursesIndexRouteImport.update({
   id: '/admin/courses/',
   path: '/admin/courses/',
@@ -130,6 +136,7 @@ const AdminCoursesSlugRoute = AdminCoursesSlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin/instructors': typeof AdminInstructorsRoute
   '/admin/login': typeof AdminLoginRoute
   '/courses/$slug': typeof CoursesSlugRoute
   '/courses/beauty-photography': typeof CoursesBeautyPhotographyRoute
@@ -151,6 +158,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin/instructors': typeof AdminInstructorsRoute
   '/admin/login': typeof AdminLoginRoute
   '/courses/$slug': typeof CoursesSlugRoute
   '/courses/beauty-photography': typeof CoursesBeautyPhotographyRoute
@@ -173,6 +181,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin/instructors': typeof AdminInstructorsRoute
   '/admin/login': typeof AdminLoginRoute
   '/courses/$slug': typeof CoursesSlugRoute
   '/courses/beauty-photography': typeof CoursesBeautyPhotographyRoute
@@ -196,6 +205,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin/instructors'
     | '/admin/login'
     | '/courses/$slug'
     | '/courses/beauty-photography'
@@ -217,6 +227,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin/instructors'
     | '/admin/login'
     | '/courses/$slug'
     | '/courses/beauty-photography'
@@ -238,6 +249,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/admin/instructors'
     | '/admin/login'
     | '/courses/$slug'
     | '/courses/beauty-photography'
@@ -260,6 +272,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminInstructorsRoute: typeof AdminInstructorsRoute
   AdminLoginRoute: typeof AdminLoginRoute
   CoursesSlugRoute: typeof CoursesSlugRoute
   CoursesBeautyPhotographyRoute: typeof CoursesBeautyPhotographyRoute
@@ -394,6 +407,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/instructors': {
+      id: '/admin/instructors'
+      path: '/admin/instructors'
+      fullPath: '/admin/instructors'
+      preLoaderRoute: typeof AdminInstructorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/courses/': {
       id: '/admin/courses/'
       path: '/admin/courses'
@@ -420,6 +440,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminInstructorsRoute: AdminInstructorsRoute,
   AdminLoginRoute: AdminLoginRoute,
   CoursesSlugRoute: CoursesSlugRoute,
   CoursesBeautyPhotographyRoute: CoursesBeautyPhotographyRoute,

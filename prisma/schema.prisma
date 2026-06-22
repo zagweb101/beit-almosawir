@@ -45,6 +45,21 @@ model DeletedCourse {
   deletedAt DateTime @default(now())
 }
 
+model Instructor {
+  id        String   @id @default(cuid())
+  name      String
+  specialty String   @default("")
+  bio       String   @default("")
+  photoUrl  String?
+  email     String?
+  phone     String?
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([active])
+}
+
 model KnowledgeChunk {
   id         String   @id @default(cuid())
   sourceType String

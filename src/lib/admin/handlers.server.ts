@@ -7,7 +7,7 @@ import {
   createAdminSession,
   verifyAdminPassword,
 } from "@/lib/admin/auth.server";
-import type { AdminCustomCourse, AdminStore } from "@/lib/admin/types";
+import type { AdminCustomCourse, AdminInstructorFields, AdminStore } from "@/lib/admin/types";
 
 export const BUILTIN_SLUGS = new Set([
   "photography-fundamentals",
@@ -144,4 +144,34 @@ export function getTokenFromRequest(request: Request): string | undefined {
   const header = request.headers.get("authorization");
   if (header?.startsWith("Bearer ")) return header.slice(7);
   return undefined;
+}
+
+// ——— المدربون ———
+
+export async function listInstructorsForAdmin(token: string) {
+  await assertAdminSession(token);
+  const { listInstructors } = await import("./instructors.server");
+  return listInstructors();
+}
+
+export async function createInstructorForAdmin(token: string, fields: AdminInstructorFields) {
+  await assertAdminSession(token);
+  const { createInstructor } = await import("./instructors.server");
+  return createInstructor(fields);
+}
+
+export async function updateInstructorForAdmin(
+  token: string,
+  id: string,
+  fields: AdminInstructorFields,
+) {
+  await assertAdminSession(token);
+  const { updateInstructor } = await import("./instructors.server");
+  return updateInstructor(id, fields);
+}
+
+export async function deleteInstructorForAdmin(token: string, id: string) {
+  await assertAdminSession(token);
+  const { deleteInstructor } = await import("./instructors.server");
+  await deleteInstructor(id);
 }

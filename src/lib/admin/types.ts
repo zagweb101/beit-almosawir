@@ -40,3 +40,25 @@ export const EMPTY_ADMIN_STORE: AdminStore = {
   customCourses: [],
   deletedSlugs: [],
 };
+
+export type AdminInstructorFields = {
+  name: string;
+  specialty: string;
+  bio: string;
+  photoUrl?: string;
+  email?: string;
+  phone?: string;
+  active: boolean;
+};
+
+export type AdminInstructor = AdminInstructorFields & {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+/** خيارات نوع التدريب المعروضة في لوحة الإدارة. */
+export const TRAINING_TYPE_OPTIONS = ["حضوري", "أونلاين", "برايفت"] as const;
+
+/** اقتراحات المستوى (قابلة للتعديل اليدوي). */
+export const LEVEL_OPTIONS = ["مبتدئ", "متوسط", "متقدم", "جميع المستويات"] as const;

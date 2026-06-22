@@ -1,8 +1,8 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import AdminShell from "@/components/admin/AdminShell";
 import AdminCourseForm from "@/components/admin/AdminCourseForm";
-import { createAdminCourseFn } from "@/lib/admin/actions.server";
+import { createAdminCourseFn, listAdminInstructorsFn } from "@/lib/admin/actions.server";
 import { getAdminToken, requireAdminToken } from "@/lib/admin/session";
 import type { AdminCourseFields } from "@/lib/admin/types";
 
@@ -30,10 +30,23 @@ function AdminNewCoursePage() {
   const [slug, setSlug] = useState("");
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
+  const [instructorNames, setInstructorNames] = useState<string[]>([]);
 
   if (!getAdminToken()) {
     void navigate({ to: "/admin/login" });
   }
+
+  useEffect(() => {
+    void (async () => {
+      try {
+        const token = requireAdminToken();
+        const list = await listAdminInstructorsFn({ data: { token } });
+        setInstructorNames(list.filter((i) => i.active).map((i) => i.name));
+      } catch {
+        /* قائمة المدربين اختيارية */
+      }
+    })();
+  }, []);
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
@@ -66,6 +79,7 @@ function AdminNewCoursePage() {
           slugEditable
           slug={slug}
           onSlugChange={setSlug}
+          instructorNames={instructorNames}
         />
         {error ? <p className="text-sm text-destructive">{error}</p> : null}
         <div className="flex flex-wrap gap-3">

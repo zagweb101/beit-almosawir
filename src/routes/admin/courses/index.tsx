@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Plus, Printer } from "lucide-react";
+import { Download, FileSpreadsheet, Plus, Printer } from "lucide-react";
 import AdminShell from "@/components/admin/AdminShell";
 import { deleteAdminCourseFn, listAdminCoursesFn } from "@/lib/admin/actions.server";
 import { getAdminToken, requireAdminToken } from "@/lib/admin/session";
+import { downloadFile, stampedName, toCsv } from "@/lib/admin/export";
 import type { AdminCourseRow } from "@/lib/admin/types";
 
 export const Route = createFileRoute("/admin/courses/")({
@@ -48,11 +49,49 @@ function AdminCoursesPage() {
     }
   }
 
+  function exportJson() {
+    downloadFile(stampedName("courses", "json"), JSON.stringify(rows, null, 2), "application/json");
+  }
+
+  function exportCsv() {
+    const csv = toCsv(rows, [
+      { key: "slug", header: "المعرّف" },
+      { key: "name", header: "الدورة" },
+      { key: "priceLabel", header: "السعر" },
+      { key: "scheduleLabel", header: "الموعد" },
+      { key: "durationDays", header: "عدد الأيام" },
+      { key: "totalHours", header: "إجمالي الساعات" },
+      { key: "dailyHours", header: "ساعات يومية" },
+      { key: "instructorName", header: "المدرب" },
+      { key: "level", header: "المستوى" },
+      { key: "location", header: "الموقع" },
+      { key: "trainingType", header: "نوع التدريب" },
+      { key: "source", header: "المصدر" },
+    ]);
+    downloadFile(stampedName("courses", "csv"), csv, "text/csv");
+  }
+
   return (
     <AdminShell
       title="إدارة الدورات"
       actions={
         <>
+          <button
+            type="button"
+            onClick={exportCsv}
+            disabled={!rows.length}
+            className="px-3 py-2 rounded-md text-sm border border-border/60 min-h-10 inline-flex items-center gap-1 disabled:opacity-50"
+          >
+            <FileSpreadsheet className="size-4" /> CSV
+          </button>
+          <button
+            type="button"
+            onClick={exportJson}
+            disabled={!rows.length}
+            className="px-3 py-2 rounded-md text-sm border border-border/60 min-h-10 inline-flex items-center gap-1 disabled:opacity-50"
+          >
+            <Download className="size-4" /> JSON
+          </button>
           <button
             type="button"
             onClick={() => window.print()}

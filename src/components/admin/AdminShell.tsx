@@ -34,6 +34,17 @@ export default function AdminShell({
               الدورات
             </Link>
             <Link
+              to="/admin/instructors"
+              className={cn(
+                "px-3 py-2 rounded-md text-sm border min-h-10 inline-flex items-center",
+                pathname.startsWith("/admin/instructors")
+                  ? "bg-primary/15 border-primary/40"
+                  : "border-border/60 text-muted-foreground",
+              )}
+            >
+              المدربون
+            </Link>
+            <Link
               to="/"
               className="px-3 py-2 rounded-md text-sm border border-border/60 min-h-10 inline-flex items-center"
             >

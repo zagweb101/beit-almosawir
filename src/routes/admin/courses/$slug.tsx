@@ -2,7 +2,11 @@ import { useEffect, useState, type FormEvent } from "react";
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import AdminShell from "@/components/admin/AdminShell";
 import AdminCourseForm from "@/components/admin/AdminCourseForm";
-import { getAdminCourseFn, saveAdminCourseFn } from "@/lib/admin/actions.server";
+import {
+  getAdminCourseFn,
+  listAdminInstructorsFn,
+  saveAdminCourseFn,
+} from "@/lib/admin/actions.server";
 import { getAdminToken, requireAdminToken } from "@/lib/admin/session";
 import type { AdminCourseFields } from "@/lib/admin/types";
 
@@ -18,6 +22,7 @@ function AdminEditCoursePage() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
+  const [instructorNames, setInstructorNames] = useState<string[]>([]);
 
   useEffect(() => {
     if (!getAdminToken()) {
@@ -27,9 +32,13 @@ function AdminEditCoursePage() {
     void (async () => {
       try {
         const token = requireAdminToken();
-        const row = await getAdminCourseFn({ data: { token, slug } });
+        const [row, instructors] = await Promise.all([
+          getAdminCourseFn({ data: { token, slug } }),
+          listAdminInstructorsFn({ data: { token } }).catch(() => []),
+        ]);
         setValues(row);
         setSource(row.source);
+        setInstructorNames(instructors.filter((i) => i.active).map((i) => i.name));
       } catch {
         setError("تعذّر تحميل الدورة.");
       }
@@ -67,7 +76,11 @@ function AdminEditCoursePage() {
         <div className="text-xs text-muted-foreground">
           المصدر: {source === "builtin" ? "دورة أساسية" : "دورة مخصصة"} · {slug}
         </div>
-        <AdminCourseForm values={values} onChange={setValues} />
+        <AdminCourseForm
+          values={values}
+          onChange={setValues}
+          instructorNames={instructorNames}
+        />
         {message ? <p className="text-sm text-primary">{message}</p> : null}
         {error ? <p className="text-sm text-destructive">{error}</p> : null}
         <div className="flex flex-wrap gap-3 admin-no-print">

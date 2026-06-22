@@ -1,3 +1,4 @@
+import { LEVEL_OPTIONS, TRAINING_TYPE_OPTIONS } from "@/lib/admin/types";
 import type { AdminCourseFields } from "@/lib/admin/types";
 
 export default function AdminCourseForm({
@@ -6,12 +7,14 @@ export default function AdminCourseForm({
   slugEditable,
   slug,
   onSlugChange,
+  instructorNames = [],
 }: {
   values: AdminCourseFields & { name: string };
   onChange: (next: AdminCourseFields & { name: string }) => void;
   slugEditable?: boolean;
   slug?: string;
   onSlugChange?: (slug: string) => void;
+  instructorNames?: string[];
 }) {
   const set = <K extends keyof (AdminCourseFields & { name: string })>(
     key: K,
@@ -81,16 +84,29 @@ export default function AdminCourseForm({
       <Field label="المدرب">
         <input
           className="admin-input"
+          list="bm-instructor-names"
           value={values.instructorName}
           onChange={(e) => set("instructorName", e.target.value)}
+          placeholder="اختر من المدربين أو اكتب اسمًا"
         />
+        <datalist id="bm-instructor-names">
+          {instructorNames.map((n) => (
+            <option key={n} value={n} />
+          ))}
+        </datalist>
       </Field>
       <Field label="المستوى">
         <input
           className="admin-input"
+          list="bm-level-options"
           value={values.level}
           onChange={(e) => set("level", e.target.value)}
         />
+        <datalist id="bm-level-options">
+          {LEVEL_OPTIONS.map((l) => (
+            <option key={l} value={l} />
+          ))}
+        </datalist>
       </Field>
       <Field label="الموقع">
         <input
@@ -100,11 +116,22 @@ export default function AdminCourseForm({
         />
       </Field>
       <Field label="نوع التدريب">
-        <input
+        <select
           className="admin-input"
           value={values.trainingType}
           onChange={(e) => set("trainingType", e.target.value)}
-        />
+        >
+          {!TRAINING_TYPE_OPTIONS.includes(
+            values.trainingType as (typeof TRAINING_TYPE_OPTIONS)[number],
+          ) && values.trainingType ? (
+            <option value={values.trainingType}>{values.trainingType}</option>
+          ) : null}
+          {TRAINING_TYPE_OPTIONS.map((t) => (
+            <option key={t} value={t}>
+              {t}
+            </option>
+          ))}
+        </select>
       </Field>
       <Field label="وصف مختصر" className="sm:col-span-2">
         <textarea

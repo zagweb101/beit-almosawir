@@ -2,11 +2,15 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import {
   createCourse,
+  createInstructorForAdmin,
   deleteCourse,
+  deleteInstructorForAdmin,
   getCourse,
   listCourses,
+  listInstructorsForAdmin,
   loginAdmin,
   saveCourse,
+  updateInstructorForAdmin,
 } from "./handlers.server";
 import { readAdminStore } from "./store.server";
 import type { AdminStore } from "./types";
@@ -70,5 +74,36 @@ export const deleteAdminCourseFn = createServerFn({ method: "POST" })
   .validator(tokenSchema.extend({ slug: z.string() }))
   .handler(async ({ data }) => {
     await deleteCourse(data.token, data.slug);
+    return { ok: true as const };
+  });
+
+// ——— المدربون ———
+
+const instructorFieldsSchema = z.object({
+  name: z.string().min(1),
+  specialty: z.string(),
+  bio: z.string(),
+  photoUrl: z.string().optional(),
+  email: z.string().optional(),
+  phone: z.string().optional(),
+  active: z.boolean(),
+});
+
+export const listAdminInstructorsFn = createServerFn({ method: "GET" })
+  .validator(tokenSchema)
+  .handler(async ({ data }) => listInstructorsForAdmin(data.token));
+
+export const createAdminInstructorFn = createServerFn({ method: "POST" })
+  .validator(tokenSchema.extend({ fields: instructorFieldsSchema }))
+  .handler(async ({ data }) => createInstructorForAdmin(data.token, data.fields));
+
+export const updateAdminInstructorFn = createServerFn({ method: "POST" })
+  .validator(tokenSchema.extend({ id: z.string().min(1), fields: instructorFieldsSchema }))
+  .handler(async ({ data }) => updateInstructorForAdmin(data.token, data.id, data.fields));
+
+export const deleteAdminInstructorFn = createServerFn({ method: "POST" })
+  .validator(tokenSchema.extend({ id: z.string().min(1) }))
+  .handler(async ({ data }) => {
+    await deleteInstructorForAdmin(data.token, data.id);
     return { ok: true as const };
   });
