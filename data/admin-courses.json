@@ -1,5 +1,20 @@
 {
-  "overrides": {},
+  "overrides": {
+    "photography-fundamentals": {
+      "name": "أساسيات التصوير",
+      "priceLabel": "تواصل معنا لمعرفة السعر والعروض المتاحة",
+      "scheduleLabel": "موعد الدفعة القادمة يعلن قريبًا",
+      "durationDays": 4,
+      "totalHours": 16,
+      "dailyHours": 4,
+      "instructorName": "",
+      "level": "مبتدئ",
+      "location": "جدة",
+      "trainingType": "حضوري",
+      "heroSubtitle": "وابدأ في صناعة صور تفهمها وتتحكم فيها",
+      "updatedAt": "2026-06-22T16:56:28.528Z"
+    }
+  },
   "customCourses": [],
   "deletedSlugs": []
 }

@@ -5,6 +5,7 @@ import { useT } from "@/lib/i18n";
 import { usePlatformT } from "@/lib/i18n-platform";
 import { getLiliKnowledgeFn, syncLiliKnowledgeFn } from "@/lib/lili/actions.server";
 import { liliAnalytics } from "@/lib/lili/analytics";
+import { getAdminToken } from "@/lib/admin/session";
 import type { LiliKnowledgeBundle } from "@/types/lili";
 
 export const Route = createFileRoute("/platform/lili")({
@@ -21,7 +22,9 @@ function LiliAdminPage() {
 
   useEffect(() => {
     setCustomNote(localStorage.getItem("bm_lili_admin_note") ?? "");
-    void getLiliKnowledgeFn().then(setBundle).catch(() => setBundle(null));
+    void getLiliKnowledgeFn()
+      .then(setBundle)
+      .catch(() => setBundle(null));
   }, []);
 
   function saveNote() {
@@ -35,13 +38,14 @@ function LiliAdminPage() {
   async function reindexKnowledge() {
     setSyncMsg("");
     try {
-      const result = await syncLiliKnowledgeFn({ data: {} });
+      const token = getAdminToken() ?? undefined;
+      const result = await syncLiliKnowledgeFn({ data: { token } });
       setSyncMsg(`${pt.liliReindexDone}: ${result.count} مقطع`);
       const next = await getLiliKnowledgeFn();
       setBundle(next);
       window.dispatchEvent(new Event("bm-admin-updated"));
     } catch {
-      setSyncMsg("تعذّرت إعادة الفهرسة — تأكد من DATABASE_URL");
+      setSyncMsg("تعذّرت إعادة الفهرسة — تأكد من صلاحيات الإدارة و DATABASE_URL");
     }
   }
 

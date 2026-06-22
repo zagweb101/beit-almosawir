@@ -20,8 +20,9 @@ export default function MessagesPanel() {
 
   useEffect(() => {
     if (user && conversations.length === 0) {
-      const id = ensureAcademyConversation();
-      if (id) setActiveId(id);
+      void ensureAcademyConversation().then((id) => {
+        if (id) setActiveId(id);
+      });
     } else if (conversations[0] && !activeId) {
       setActiveId(conversations[0].id);
     }
@@ -47,9 +48,11 @@ export default function MessagesPanel() {
   }
 
   const startAcademyChat = () => {
-    const id = ensureAcademyConversation();
-    setActiveId(id);
-    markConversationRead(id);
+    void ensureAcademyConversation().then((id) => {
+      if (!id) return;
+      setActiveId(id);
+      markConversationRead(id);
+    });
   };
 
   return (
@@ -116,7 +119,7 @@ export default function MessagesPanel() {
             className="p-4 border-t border-border/50 flex gap-2"
             onSubmit={(e) => {
               e.preventDefault();
-              sendMessage(activeId, draft);
+              void sendMessage(activeId, draft);
               setDraft("");
             }}
           >

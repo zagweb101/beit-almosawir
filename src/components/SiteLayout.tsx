@@ -90,7 +90,11 @@ function Header() {
               <DropdownMenuSeparator />
               {catalog.map((entry) => (
                 <DropdownMenuItem key={entry.path} asChild>
-                  <Link to={entry.path} className="cursor-pointer">
+                  <Link
+                    to="/courses/$slug"
+                    params={{ slug: entry.course.slug }}
+                    className="cursor-pointer"
+                  >
                     {entry.course.name}
                   </Link>
                 </DropdownMenuItem>
@@ -149,7 +153,8 @@ function Header() {
                   {catalog.map((entry) => (
                     <Link
                       key={entry.path}
-                      to={entry.path}
+                      to="/courses/$slug"
+                      params={{ slug: entry.course.slug }}
                       onClick={() => setOpen(false)}
                       className="px-3 py-3 min-h-11 flex items-center rounded-md text-base text-muted-foreground hover:text-foreground hover:bg-secondary/40 transition-colors break-words ps-6"
                     >

@@ -36,7 +36,9 @@ function AdminLoginPage() {
     <div className="min-h-screen flex items-center justify-center px-4" dir="rtl">
       <form onSubmit={onSubmit} className="card-elegant w-full max-w-md rounded-2xl p-8 space-y-4">
         <h1 className="text-2xl font-bold text-center">لوحة إدارة الدورات</h1>
-        <p className="text-sm text-muted-foreground text-center">بيت المصور — تعديل الأسعار والمواعيد والمدربين</p>
+        <p className="text-sm text-muted-foreground text-center">
+          بيت المصور — تعديل الأسعار والمواعيد والمدربين
+        </p>
         <input
           type="password"
           value={password}
@@ -46,7 +48,11 @@ function AdminLoginPage() {
           autoComplete="current-password"
         />
         {error ? <p className="text-sm text-destructive">{error}</p> : null}
-        <button type="submit" disabled={loading} className="btn-hero w-full rounded-md py-2.5 font-semibold">
+        <button
+          type="submit"
+          disabled={loading}
+          className="btn-hero w-full rounded-md py-2.5 font-semibold"
+        >
           {loading ? "جاري الدخول…" : "دخول"}
         </button>
       </form>

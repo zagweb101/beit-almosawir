@@ -37,7 +37,10 @@ export function searchKnowledge(query: string, knowledge: CourseKnowledge[]): Co
     .map((s) => s.course);
 }
 
-export function searchKnowledgeChunks(query: string, chunks: KnowledgeChunk[]): KnowledgeChunk | null {
+export function searchKnowledgeChunks(
+  query: string,
+  chunks: KnowledgeChunk[],
+): KnowledgeChunk | null {
   const q = normalize(query);
   if (!q || chunks.length === 0) return null;
 
@@ -45,13 +48,20 @@ export function searchKnowledgeChunks(query: string, chunks: KnowledgeChunk[]): 
 
   for (const chunk of chunks) {
     const haystack = `${chunk.title} ${chunk.content}`.toLowerCase();
-    let score = chunk.priority;
+    let matched = false;
+    let score = 0;
     for (const token of q.split(/\s+/)) {
       if (token.length < 2) continue;
-      if (haystack.includes(token)) score += 2;
+      if (haystack.includes(token)) {
+        matched = true;
+        score += 2;
+      }
     }
-    if (chunk.sourceType === "faq" && q.length > 4) score += 1;
-    if (!best || score > best.score) best = { chunk, score };
+    if (matched) {
+      score += Math.min(chunk.priority, 5);
+      if (chunk.sourceType === "faq" && q.length > 4) score += 1;
+    }
+    if (matched && (!best || score > best.score)) best = { chunk, score };
   }
 
   return best && best.score >= 3 ? best.chunk : null;

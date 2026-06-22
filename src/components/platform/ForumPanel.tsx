@@ -71,7 +71,7 @@ export default function ForumPanel() {
               e.preventDefault();
               const slug =
                 courseSlug === "all" ? (catalog[0]?.course.slug ?? "general") : courseSlug;
-              createThread(slug, title, body);
+              void createThread(slug, title, body);
               setTitle("");
               setBody("");
               setShowNew(false);
@@ -139,7 +139,7 @@ export default function ForumPanel() {
               className="mt-6 flex gap-2"
               onSubmit={(e) => {
                 e.preventDefault();
-                addReply(selected.id, replyBody);
+                void addReply(selected.id, replyBody);
                 setReplyBody("");
               }}
             >

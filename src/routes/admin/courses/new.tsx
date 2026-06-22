@@ -47,7 +47,11 @@ function AdminNewCoursePage() {
       window.dispatchEvent(new Event("bm-admin-updated"));
       void navigate({ to: "/admin/courses/$slug", params: { slug: result.slug } });
     } catch (err) {
-      setError(err instanceof Error && err.message === "SLUG_EXISTS" ? "المعرّف مستخدم مسبقًا." : "تعذّر إنشاء الدورة.");
+      setError(
+        err instanceof Error && err.message === "SLUG_EXISTS"
+          ? "المعرّف مستخدم مسبقًا."
+          : "تعذّر إنشاء الدورة.",
+      );
     } finally {
       setSaving(false);
     }
@@ -56,10 +60,20 @@ function AdminNewCoursePage() {
   return (
     <AdminShell title="إضافة دورة جديدة">
       <form onSubmit={onSubmit} className="max-w-3xl space-y-6">
-        <AdminCourseForm values={values} onChange={setValues} slugEditable slug={slug} onSlugChange={setSlug} />
+        <AdminCourseForm
+          values={values}
+          onChange={setValues}
+          slugEditable
+          slug={slug}
+          onSlugChange={setSlug}
+        />
         {error ? <p className="text-sm text-destructive">{error}</p> : null}
         <div className="flex flex-wrap gap-3">
-          <button type="submit" disabled={saving} className="btn-hero px-5 py-2.5 rounded-md font-semibold">
+          <button
+            type="submit"
+            disabled={saving}
+            className="btn-hero px-5 py-2.5 rounded-md font-semibold"
+          >
             {saving ? "جاري الإنشاء…" : "إنشاء الدورة"}
           </button>
           <Link to="/admin/courses" className="px-5 py-2.5 rounded-md border border-border/60">

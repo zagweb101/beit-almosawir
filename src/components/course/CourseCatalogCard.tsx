@@ -47,7 +47,8 @@ export default function CourseCatalogCard({ entry }: Props) {
         </ul>
 
         <Link
-          to={path}
+          to="/courses/$slug"
+          params={{ slug: course.slug }}
           className="btn-hero mt-5 sm:mt-6 inline-flex w-full items-center justify-center gap-2 px-5 py-3 course-btn rounded-md text-base font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           {t.coursesPage.viewCourse}

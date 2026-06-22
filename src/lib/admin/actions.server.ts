@@ -34,7 +34,7 @@ export const adminLoginFn = createServerFn({ method: "POST" })
   });
 
 export const getPublicAdminStoreFn = createServerFn({ method: "GET" }).handler(async () => {
-  return readAdminStore() satisfies AdminStore;
+  return await readAdminStore();
 });
 
 export const listAdminCoursesFn = createServerFn({ method: "GET" })

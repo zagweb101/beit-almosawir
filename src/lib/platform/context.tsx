@@ -20,11 +20,25 @@ import type {
 } from "@/types/platform";
 import { ACADEMY_USER_ID, ACADEMY_USER_NAME, DEFAULT_AFFILIATE, LIVE_SESSIONS } from "./config";
 import { findCoupon } from "./coupon";
-import { platformStorage, uid } from "./storage";
+import { uid } from "./storage";
+import {
+  platformAddReplyFn,
+  platformCreateThreadFn,
+  platformEnsureConversationFn,
+  platformLoadAffiliateFn,
+  platformLoadDataFn,
+  platformLoginFn,
+  platformMarkReadFn,
+  platformRecordAffiliateClickFn,
+  platformRegisterAffiliateFn,
+  platformSendMessageFn,
+  platformSyncConversationsFn,
+} from "./actions.server";
+import { platformDb } from "./storage-db.server";
 
 type PlatformContextValue = {
   user: PlatformUser | null;
-  login: (name: string, email: string) => void;
+  login: (name: string, email: string) => Promise<void>;
   logout: () => void;
   currency: CurrencyCode;
   setCurrency: (c: CurrencyCode) => void;
@@ -33,18 +47,19 @@ type PlatformContextValue = {
   clearCoupon: () => void;
   affiliateRef: string | null;
   affiliateProfile: AffiliateProfile;
-  registerAffiliate: (name: string) => void;
+  registerAffiliate: (name: string) => Promise<void>;
   recordAffiliateClick: () => void;
   liveSessions: typeof LIVE_SESSIONS;
   threads: ForumThread[];
   replies: ForumReply[];
-  createThread: (courseSlug: string, title: string, body: string) => void;
-  addReply: (threadId: string, body: string) => void;
+  createThread: (courseSlug: string, title: string, body: string) => Promise<void>;
+  addReply: (threadId: string, body: string) => Promise<void>;
   conversations: Conversation[];
   messages: DirectMessage[];
-  ensureAcademyConversation: () => string;
-  sendMessage: (conversationId: string, body: string) => void;
+  ensureAcademyConversation: () => Promise<string>;
+  sendMessage: (conversationId: string, body: string) => Promise<void>;
   markConversationRead: (conversationId: string) => void;
+  loading: boolean;
 };
 
 const PlatformCtx = createContext<PlatformContextValue | null>(null);
@@ -58,6 +73,25 @@ function seedAffiliateProfile(): AffiliateProfile {
   };
 }
 
+const USER_KEY = "bm_platform_user";
+const CURRENCY_KEY = "bm_platform_currency";
+const AFFILIATE_REF_KEY = "bm_platform_affiliate_ref";
+
+function readLocal<T>(key: string, fallback: T): T {
+  if (typeof localStorage === "undefined") return fallback;
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? (JSON.parse(raw) as T) : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function writeLocal<T>(key: string, value: T) {
+  if (typeof localStorage === "undefined") return;
+  localStorage.setItem(key, JSON.stringify(value));
+}
+
 export function PlatformProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<PlatformUser | null>(null);
   const [currency, setCurrencyState] = useState<CurrencyCode>("SAR");
@@ -69,20 +103,38 @@ export function PlatformProvider({ children }: { children: ReactNode }) {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [messages, setMessages] = useState<DirectMessage[]>([]);
   const [hydrated, setHydrated] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const search = useRouterState({ select: (s) => s.location.searchStr });
 
   useEffect(() => {
-    setUser(platformStorage.getUser());
-    setCurrencyState(platformStorage.getCurrency());
-    setAffiliateRef(platformStorage.getAffiliateRef());
-    setAffiliateProfile(platformStorage.getAffiliateProfile() ?? seedAffiliateProfile());
-    setThreads(platformStorage.getThreads());
-    setReplies(platformStorage.getReplies());
-    setConversations(platformStorage.getConversations());
-    setMessages(platformStorage.getMessages());
+    const localUser = readLocal<PlatformUser | null>(USER_KEY, null);
+    setCurrencyState(readLocal<CurrencyCode>(CURRENCY_KEY, "SAR"));
+    setAffiliateRef(readLocal<string | null>(AFFILIATE_REF_KEY, null));
+    setUser(localUser);
     setHydrated(true);
   }, []);
+
+  useEffect(() => {
+    if (!hydrated || !user) return;
+    let cancelled = false;
+    setLoading(true);
+    platformLoadDataFn({ data: { userId: user.id } })
+      .then((data) => {
+        if (cancelled) return;
+        setThreads(data.threads ?? []);
+        setReplies(data.replies ?? []);
+        setConversations(data.conversations ?? []);
+        if (data.affiliateProfile) setAffiliateProfile(data.affiliateProfile);
+      })
+      .catch((error) => console.error("[platform] load failed:", error))
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [hydrated, user]);
 
   useEffect(() => {
     if (!hydrated) return;
@@ -90,33 +142,30 @@ export function PlatformProvider({ children }: { children: ReactNode }) {
     const ref = params.get("ref")?.trim().toUpperCase();
     if (!ref) return;
     setAffiliateRef(ref);
-    platformStorage.setAffiliateRef(ref);
+    writeLocal(AFFILIATE_REF_KEY, ref);
     setAffiliateProfile((prev) => {
       const next = { ...prev, clicks: prev.clicks + 1 };
-      platformStorage.setAffiliateProfile(next);
       return next;
     });
+    platformRecordAffiliateClickFn({ data: { code: ref } }).catch(() => {});
   }, [search, hydrated]);
 
-  const login = useCallback((name: string, email: string) => {
-    const next: PlatformUser = {
-      id: uid("user"),
-      name: name.trim(),
-      email: email.trim(),
-      role: "trainee",
-    };
+  const login = useCallback(async (name: string, email: string) => {
+    const next = await platformLoginFn({ data: { name, email } });
     setUser(next);
-    platformStorage.setUser(next);
+    writeLocal(USER_KEY, next);
+    const profile = await platformLoadAffiliateFn({ data: { code: next.id } }).catch(() => null);
+    if (profile) setAffiliateProfile(profile);
   }, []);
 
   const logout = useCallback(() => {
     setUser(null);
-    platformStorage.setUser(null);
+    if (typeof localStorage !== "undefined") localStorage.removeItem(USER_KEY);
   }, []);
 
   const setCurrency = useCallback((c: CurrencyCode) => {
     setCurrencyState(c);
-    platformStorage.setCurrency(c);
+    writeLocal(CURRENCY_KEY, c);
   }, []);
 
   const applyCoupon = useCallback((code: string) => {
@@ -128,33 +177,23 @@ export function PlatformProvider({ children }: { children: ReactNode }) {
 
   const clearCoupon = useCallback(() => setCouponCode(""), []);
 
-  const registerAffiliate = useCallback(
-    (name: string) => {
-      const code = name.trim().toUpperCase().replace(/\s+/g, "").slice(0, 12);
-      const next: AffiliateProfile = {
-        code: code || DEFAULT_AFFILIATE.code,
-        name: name.trim() || DEFAULT_AFFILIATE.name,
-        commissionRate: DEFAULT_AFFILIATE.commissionRate,
-        clicks: affiliateProfile.clicks,
-        conversions: affiliateProfile.conversions,
-        earningsSar: affiliateProfile.earningsSar,
-      };
-      setAffiliateProfile(next);
-      platformStorage.setAffiliateProfile(next);
-    },
-    [affiliateProfile.clicks, affiliateProfile.conversions, affiliateProfile.earningsSar],
-  );
+  const registerAffiliate = useCallback(async (name: string) => {
+    const profile = await platformRegisterAffiliateFn({ data: { name } });
+    setAffiliateProfile(profile);
+  }, []);
 
   const recordAffiliateClick = useCallback(() => {
     setAffiliateProfile((prev) => {
       const next = { ...prev, clicks: prev.clicks + 1 };
-      platformStorage.setAffiliateProfile(next);
       return next;
     });
-  }, []);
+    if (affiliateRef) {
+      platformRecordAffiliateClickFn({ data: { code: affiliateRef } }).catch(() => {});
+    }
+  }, [affiliateRef]);
 
   const createThread = useCallback(
-    (courseSlug: string, title: string, body: string) => {
+    async (courseSlug: string, title: string, body: string) => {
       if (!user) return;
       const thread: ForumThread = {
         id: uid("thread"),
@@ -166,17 +205,14 @@ export function PlatformProvider({ children }: { children: ReactNode }) {
         createdAt: new Date().toISOString(),
         replyCount: 0,
       };
-      setThreads((prev) => {
-        const next = [thread, ...prev];
-        platformStorage.setThreads(next);
-        return next;
-      });
+      await platformCreateThreadFn({ data: { thread } });
+      setThreads((prev) => [thread, ...prev]);
     },
     [user],
   );
 
   const addReply = useCallback(
-    (threadId: string, body: string) => {
+    async (threadId: string, body: string) => {
       if (!user) return;
       const reply: ForumReply = {
         id: uid("reply"),
@@ -186,43 +222,27 @@ export function PlatformProvider({ children }: { children: ReactNode }) {
         body: body.trim(),
         createdAt: new Date().toISOString(),
       };
-      setReplies((prev) => {
-        const next = [...prev, reply];
-        platformStorage.setReplies(next);
-        return next;
-      });
-      setThreads((prev) => {
-        const next = prev.map((t) =>
-          t.id === threadId ? { ...t, replyCount: t.replyCount + 1 } : t,
-        );
-        platformStorage.setThreads(next);
-        return next;
-      });
+      await platformAddReplyFn({ data: { reply } });
+      setReplies((prev) => [...prev, reply]);
+      setThreads((prev) =>
+        prev.map((t) => (t.id === threadId ? { ...t, replyCount: t.replyCount + 1 } : t)),
+      );
     },
     [user],
   );
 
-  const ensureAcademyConversation = useCallback(() => {
+  const ensureAcademyConversation = useCallback(async (): Promise<string> => {
     if (!user) return "";
     const existing = conversations.find((c) => c.participantIds.includes(ACADEMY_USER_ID));
     if (existing) return existing.id;
-    const conv: Conversation = {
-      id: uid("conv"),
-      participantIds: [user.id, ACADEMY_USER_ID],
-      participantNames: [user.name, ACADEMY_USER_NAME.ar],
-      lastMessageAt: new Date().toISOString(),
-      unreadCount: 0,
-    };
-    setConversations((prev) => {
-      const next = [conv, ...prev];
-      platformStorage.setConversations(next);
-      return next;
-    });
+    const conv = await platformEnsureConversationFn({ data: user });
+    if (!conv) return "";
+    setConversations((prev) => [conv, ...prev]);
     return conv.id;
   }, [conversations, user]);
 
   const sendMessage = useCallback(
-    (conversationId: string, body: string) => {
+    async (conversationId: string, body: string) => {
       if (!user || !body.trim()) return;
       const msg: DirectMessage = {
         id: uid("msg"),
@@ -233,28 +253,20 @@ export function PlatformProvider({ children }: { children: ReactNode }) {
         createdAt: new Date().toISOString(),
         read: true,
       };
-      setMessages((prev) => {
-        const next = [...prev, msg];
-        platformStorage.setMessages(next);
-        return next;
-      });
-      setConversations((prev) => {
-        const next = prev.map((c) =>
-          c.id === conversationId ? { ...c, lastMessageAt: msg.createdAt } : c,
-        );
-        platformStorage.setConversations(next);
-        return next;
-      });
+      await platformSendMessageFn({ data: { message: msg } });
+      setMessages((prev) => [...prev, msg]);
+      setConversations((prev) =>
+        prev.map((c) => (c.id === conversationId ? { ...c, lastMessageAt: msg.createdAt } : c)),
+      );
     },
     [user],
   );
 
   const markConversationRead = useCallback((conversationId: string) => {
-    setConversations((prev) => {
-      const next = prev.map((c) => (c.id === conversationId ? { ...c, unreadCount: 0 } : c));
-      platformStorage.setConversations(next);
-      return next;
-    });
+    setConversations((prev) =>
+      prev.map((c) => (c.id === conversationId ? { ...c, unreadCount: 0 } : c)),
+    );
+    platformMarkReadFn({ data: { conversationId } }).catch(() => {});
   }, []);
 
   const appliedCoupon = useMemo(
@@ -286,6 +298,7 @@ export function PlatformProvider({ children }: { children: ReactNode }) {
       ensureAcademyConversation,
       sendMessage,
       markConversationRead,
+      loading,
     }),
     [
       user,
@@ -309,6 +322,7 @@ export function PlatformProvider({ children }: { children: ReactNode }) {
       ensureAcademyConversation,
       sendMessage,
       markConversationRead,
+      loading,
     ],
   );
 
@@ -324,3 +338,5 @@ export function usePlatform() {
 export function academyName(lang: Lang) {
   return lang === "ar" ? ACADEMY_USER_NAME.ar : ACADEMY_USER_NAME.en;
 }
+
+export { platformDb };

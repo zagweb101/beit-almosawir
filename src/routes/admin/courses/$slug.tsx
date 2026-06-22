@@ -71,13 +71,21 @@ function AdminEditCoursePage() {
         {message ? <p className="text-sm text-primary">{message}</p> : null}
         {error ? <p className="text-sm text-destructive">{error}</p> : null}
         <div className="flex flex-wrap gap-3 admin-no-print">
-          <button type="submit" disabled={saving} className="btn-hero px-5 py-2.5 rounded-md font-semibold">
+          <button
+            type="submit"
+            disabled={saving}
+            className="btn-hero px-5 py-2.5 rounded-md font-semibold"
+          >
             {saving ? "جاري الحفظ…" : "حفظ التعديلات"}
           </button>
           <Link to="/admin/courses" className="px-5 py-2.5 rounded-md border border-border/60">
             رجوع
           </Link>
-          <Link to={`/courses/${slug}`} className="px-5 py-2.5 rounded-md border border-border/60">
+          <Link
+            to="/courses/$slug"
+            params={{ slug }}
+            className="px-5 py-2.5 rounded-md border border-border/60"
+          >
             معاينة الصفحة
           </Link>
         </div>

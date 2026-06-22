@@ -53,10 +53,17 @@ function AdminCoursesPage() {
       title="إدارة الدورات"
       actions={
         <>
-          <button type="button" onClick={() => window.print()} className="px-3 py-2 rounded-md text-sm border border-border/60 min-h-10 inline-flex items-center gap-1">
+          <button
+            type="button"
+            onClick={() => window.print()}
+            className="px-3 py-2 rounded-md text-sm border border-border/60 min-h-10 inline-flex items-center gap-1"
+          >
             <Printer className="size-4" /> طباعة
           </button>
-          <Link to="/admin/courses/new" className="btn-hero px-3 py-2 rounded-md text-sm font-semibold min-h-10 inline-flex items-center gap-1">
+          <Link
+            to="/admin/courses/new"
+            className="btn-hero px-3 py-2 rounded-md text-sm font-semibold min-h-10 inline-flex items-center gap-1"
+          >
             <Plus className="size-4" /> دورة جديدة
           </Link>
         </>
@@ -64,9 +71,9 @@ function AdminCoursesPage() {
     >
       {error ? <p className="text-destructive mb-4">{error}</p> : null}
       <p className="text-xs text-muted-foreground mb-4 admin-no-print">
-        التعديلات تُحفظ في <code className="text-foreground">data/admin-courses.json</code>. على Railway
-        أضف Volume مربوطًا بمجلد <code className="text-foreground">/app/data</code> حتى لا تُفقد
-        البيانات عند إعادة النشر.
+        التعديلات تُحفظ في <code className="text-foreground">data/admin-courses.json</code>. على
+        Railway أضف Volume مربوطًا بمجلد <code className="text-foreground">/app/data</code> حتى لا
+        تُفقد البيانات عند إعادة النشر.
       </p>
       {loading ? (
         <p className="text-muted-foreground">جاري التحميل…</p>
@@ -95,10 +102,18 @@ function AdminCoursesPage() {
                   <td className="p-3">{row.instructorName || "—"}</td>
                   <td className="p-3 admin-no-print">
                     <div className="flex flex-wrap gap-2">
-                      <Link to="/admin/courses/$slug" params={{ slug: row.slug }} className="text-primary underline">
+                      <Link
+                        to="/admin/courses/$slug"
+                        params={{ slug: row.slug }}
+                        className="text-primary underline"
+                      >
                         تعديل
                       </Link>
-                      <button type="button" onClick={() => onDelete(row.slug)} className="text-destructive">
+                      <button
+                        type="button"
+                        onClick={() => onDelete(row.slug)}
+                        className="text-destructive"
+                      >
                         حذف
                       </button>
                     </div>

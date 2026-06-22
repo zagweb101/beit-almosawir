@@ -147,7 +147,7 @@ function handleRecommendFlow(params: RespondParams): RespondOutput | null {
 
 export function respond(params: RespondParams): RespondOutput {
   const { text, knowledge, pageContext, userName, chunks } = params;
-  let { recommend } = params;
+  const { recommend } = params;
 
   if (isPromptInjection(text)) {
     return { reply: injectionResponse(), recommend };

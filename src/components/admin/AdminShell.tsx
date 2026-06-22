@@ -33,7 +33,10 @@ export default function AdminShell({
             >
               الدورات
             </Link>
-            <Link to="/" className="px-3 py-2 rounded-md text-sm border border-border/60 min-h-10 inline-flex items-center">
+            <Link
+              to="/"
+              className="px-3 py-2 rounded-md text-sm border border-border/60 min-h-10 inline-flex items-center"
+            >
               الموقع
             </Link>
             <button

@@ -1,11 +1,7 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { hasDatabase } from "@/lib/db/prisma.server";
-import {
-  migrateFileStoreToDb,
-  readAdminStoreFromDb,
-  writeAdminStoreToDb,
-} from "./store-db.server";
+import { migrateFileStoreToDb, readAdminStoreFromDb, writeAdminStoreToDb } from "./store-db.server";
 import type { AdminStore } from "./types";
 import { EMPTY_ADMIN_STORE } from "./types";
 

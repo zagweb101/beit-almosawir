@@ -35,13 +35,15 @@ function NotFoundComponent() {
 }
 
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
-  console.error(error);
+  console.error("[app-error]", error);
   const router = useRouter();
   return (
     <div dir="rtl" className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
         <h1 className="text-xl font-semibold">حدث خطأ غير متوقع</h1>
-        <p className="mt-2 text-sm text-muted-foreground">{error.message}</p>
+        <p className="mt-2 text-sm text-muted-foreground">
+          نعتذر عن الإزعاج. يرجى إعادة المحاولة، وإن استمرت المشكلة تواصل مع فريق بيت المصور.
+        </p>
         <button
           onClick={() => {
             router.invalidate();

@@ -3,10 +3,8 @@ import { z } from "zod";
 import type { ChatPageContext, RecommendState } from "@/types/lili";
 import { respond } from "./responder";
 import { sanitizeUserInput } from "./guardrails";
-import {
-  loadLiliKnowledgeBundle,
-  syncLiliKnowledgeToDatabase,
-} from "./knowledge-server.server";
+import { assertAdminSession } from "@/lib/admin/auth.server";
+import { loadLiliKnowledgeBundle, syncLiliKnowledgeToDatabase } from "./knowledge-server.server";
 
 const pageContextSchema = z.object({
   pageType: z.enum(["home", "courses", "course", "about", "contact", "platform", "other"]),
@@ -31,7 +29,8 @@ export const getLiliKnowledgeFn = createServerFn({ method: "GET" }).handler(asyn
 
 export const syncLiliKnowledgeFn = createServerFn({ method: "POST" })
   .validator(z.object({ token: z.string().optional() }))
-  .handler(async () => {
+  .handler(async ({ data }) => {
+    await assertAdminSession(data.token);
     return syncLiliKnowledgeToDatabase();
   });
 

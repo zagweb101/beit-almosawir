@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/breadcrumb";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-const catalogAr = getCourseCatalog("ar");
 const seoTitleAr = "دورات أكاديمية بيت المصور في جدة | بيت المصور";
 const seoDescAr =
   "استكشف دورات التصوير والإضاءة الحضورية في جدة: أساسيات التصوير واحتراف الإضاءة الشاملة مع تدريب عملي داخل الاستوديو.";

@@ -7,7 +7,11 @@ import { getWeddingPhotographyCourse } from "@/data/courses/wedding-photography"
 import { useMemo } from "react";
 import type { CourseLandingData } from "@/types/course";
 
-function pickFromCatalog(catalog: ReturnType<typeof useCourseAdmin>["catalog"], slug: string, fallback: CourseLandingData) {
+function pickFromCatalog(
+  catalog: ReturnType<typeof useCourseAdmin>["catalog"],
+  slug: string,
+  fallback: CourseLandingData,
+) {
   return catalog.find((e) => e.course.slug === slug)?.course ?? fallback;
 }
 
@@ -15,7 +19,8 @@ export function usePhotographyFundamentalsCourse() {
   const { lang } = useT();
   const { catalog } = useCourseAdmin();
   return useMemo(
-    () => pickFromCatalog(catalog, "photography-fundamentals", getPhotographyFundamentalsCourse(lang)),
+    () =>
+      pickFromCatalog(catalog, "photography-fundamentals", getPhotographyFundamentalsCourse(lang)),
     [catalog, lang],
   );
 }

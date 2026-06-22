@@ -13,8 +13,10 @@ export default function AdminCourseForm({
   slug?: string;
   onSlugChange?: (slug: string) => void;
 }) {
-  const set = <K extends keyof (AdminCourseFields & { name: string })>(key: K, value: (AdminCourseFields & { name: string })[K]) =>
-    onChange({ ...values, [key]: value });
+  const set = <K extends keyof (AdminCourseFields & { name: string })>(
+    key: K,
+    value: (AdminCourseFields & { name: string })[K],
+  ) => onChange({ ...values, [key]: value });
 
   return (
     <div className="grid sm:grid-cols-2 gap-4">
@@ -27,14 +29,27 @@ export default function AdminCourseForm({
       </Field>
       {slugEditable ? (
         <Field label="المعرّف (slug)">
-          <input className="admin-input" value={slug ?? ""} onChange={(e) => onSlugChange?.(e.target.value)} dir="ltr" />
+          <input
+            className="admin-input"
+            value={slug ?? ""}
+            onChange={(e) => onSlugChange?.(e.target.value)}
+            dir="ltr"
+          />
         </Field>
       ) : null}
       <Field label="السعر">
-        <input className="admin-input" value={values.priceLabel} onChange={(e) => set("priceLabel", e.target.value)} />
+        <input
+          className="admin-input"
+          value={values.priceLabel}
+          onChange={(e) => set("priceLabel", e.target.value)}
+        />
       </Field>
       <Field label="الموعد">
-        <input className="admin-input" value={values.scheduleLabel} onChange={(e) => set("scheduleLabel", e.target.value)} />
+        <input
+          className="admin-input"
+          value={values.scheduleLabel}
+          onChange={(e) => set("scheduleLabel", e.target.value)}
+        />
       </Field>
       <Field label="عدد الأيام">
         <input
@@ -64,16 +79,32 @@ export default function AdminCourseForm({
         />
       </Field>
       <Field label="المدرب">
-        <input className="admin-input" value={values.instructorName} onChange={(e) => set("instructorName", e.target.value)} />
+        <input
+          className="admin-input"
+          value={values.instructorName}
+          onChange={(e) => set("instructorName", e.target.value)}
+        />
       </Field>
       <Field label="المستوى">
-        <input className="admin-input" value={values.level} onChange={(e) => set("level", e.target.value)} />
+        <input
+          className="admin-input"
+          value={values.level}
+          onChange={(e) => set("level", e.target.value)}
+        />
       </Field>
       <Field label="الموقع">
-        <input className="admin-input" value={values.location} onChange={(e) => set("location", e.target.value)} />
+        <input
+          className="admin-input"
+          value={values.location}
+          onChange={(e) => set("location", e.target.value)}
+        />
       </Field>
       <Field label="نوع التدريب">
-        <input className="admin-input" value={values.trainingType} onChange={(e) => set("trainingType", e.target.value)} />
+        <input
+          className="admin-input"
+          value={values.trainingType}
+          onChange={(e) => set("trainingType", e.target.value)}
+        />
       </Field>
       <Field label="وصف مختصر" className="sm:col-span-2">
         <textarea

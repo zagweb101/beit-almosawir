@@ -69,10 +69,7 @@ export function mergeCourseFields(
   };
 }
 
-export function buildCustomCourseLanding(
-  custom: AdminCustomCourse,
-  lang: Lang,
-): CourseLandingData {
+export function buildCustomCourseLanding(custom: AdminCustomCourse, lang: Lang): CourseLandingData {
   const base = getPhotographyFundamentalsCourse(lang);
   const path = `/courses/${custom.slug}` as const;
   return mergeCourseFields(

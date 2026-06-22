@@ -34,7 +34,7 @@ export default function AffiliatePanel() {
         />
         <button
           type="button"
-          onClick={() => registerAffiliate(name)}
+          onClick={() => void registerAffiliate(name)}
           className="btn-hero px-4 py-2 rounded-md text-sm font-semibold"
         >
           {pt.save}

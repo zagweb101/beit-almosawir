@@ -27,8 +27,8 @@ export function slugify(input: string) {
 }
 
 export async function loginAdmin(password: string) {
-  if (!verifyAdminPassword(password)) throw new Error("INVALID_PASSWORD");
-  return { token: createAdminSession() };
+  if (!(await verifyAdminPassword(password))) throw new Error("INVALID_PASSWORD");
+  return { token: await createAdminSession() };
 }
 
 export async function getPublicStore(): Promise<AdminStore> {
@@ -36,7 +36,7 @@ export async function getPublicStore(): Promise<AdminStore> {
 }
 
 export async function listCourses(token: string) {
-  assertAdminSession(token);
+  await assertAdminSession(token);
   const catalog = await mergedCatalog("ar");
   const store = await readAdminStore();
   return catalog.map((entry) => ({
@@ -53,7 +53,7 @@ export async function listCourses(token: string) {
 }
 
 export async function getCourse(token: string, slug: string) {
-  assertAdminSession(token);
+  await assertAdminSession(token);
   const catalog = await mergedCatalog("ar");
   const entry = catalog.find((e) => e.course.slug === slug);
   if (!entry) throw new Error("NOT_FOUND");
@@ -80,7 +80,7 @@ export async function saveCourse(
   slug: string,
   fields: Omit<AdminCustomCourse, "slug" | "createdAt" | "updatedAt">,
 ) {
-  assertAdminSession(token);
+  await assertAdminSession(token);
   const store = await readAdminStore();
   const now = new Date().toISOString();
 
@@ -103,7 +103,7 @@ export async function createCourse(
   fields: Omit<AdminCustomCourse, "slug" | "createdAt" | "updatedAt">,
   slugInput?: string,
 ) {
-  assertAdminSession(token);
+  await assertAdminSession(token);
   const store = await readAdminStore();
   const slug = slugify(slugInput ?? fields.name);
   if (!slug) throw new Error("INVALID_SLUG");
@@ -124,7 +124,7 @@ export async function createCourse(
 }
 
 export async function deleteCourse(token: string, slug: string) {
-  assertAdminSession(token);
+  await assertAdminSession(token);
   const store = await readAdminStore();
 
   if (store.customCourses.some((c) => c.slug === slug)) {

@@ -59,3 +59,76 @@ model KnowledgeChunk {
   @@index([sourceType, sourceId])
   @@index([active])
 }
+
+model AdminSession {
+  token     String   @id
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([expiresAt])
+}
+
+model PlatformUser {
+  id    String @id
+  name  String
+  email String
+  role  String @default("trainee")
+
+  @@index([email])
+}
+
+model ForumThread {
+  id          String   @id
+  courseSlug  String
+  authorId    String
+  authorName  String
+  title       String
+  body        String
+  replyCount  Int      @default(0)
+  createdAt   DateTime @default(now())
+
+  @@index([courseSlug])
+  @@index([authorId])
+}
+
+model ForumReply {
+  id         String   @id
+  threadId   String
+  authorId   String
+  authorName String
+  body       String
+  createdAt  DateTime @default(now())
+
+  @@index([threadId])
+}
+
+model Conversation {
+  id             String   @id
+  participantIds String[]
+  participantNames String[]
+  lastMessageAt  DateTime @default(now())
+  unreadCount    Int      @default(0)
+  createdAt      DateTime @default(now())
+}
+
+model DirectMessage {
+  id             String   @id
+  conversationId String
+  senderId       String
+  senderName     String
+  body           String
+  read           Boolean  @default(false)
+  createdAt      DateTime @default(now())
+
+  @@index([conversationId])
+}
+
+model AffiliateProfile {
+  code           String @id
+  name           String
+  commissionRate Float  @default(0.1)
+  clicks         Int    @default(0)
+  conversions    Int    @default(0)
+  earningsSar    Float  @default(0)
+  updatedAt      DateTime @updatedAt
+}

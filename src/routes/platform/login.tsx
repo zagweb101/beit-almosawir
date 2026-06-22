@@ -20,10 +20,10 @@ function PlatformLoginPage() {
     if (user) navigate({ to: "/platform" });
   }, [user, navigate]);
 
-  const onSubmit = (e: FormEvent) => {
+  const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !email.trim()) return;
-    login(name, email);
+    await login(name, email);
     navigate({ to: "/platform" });
   };
 
