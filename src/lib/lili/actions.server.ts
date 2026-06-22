@@ -5,6 +5,8 @@ import { respond } from "./responder";
 import { sanitizeUserInput } from "./guardrails";
 import { assertAdminSession } from "@/lib/admin/auth.server";
 import { loadLiliKnowledgeBundle, syncLiliKnowledgeToDatabase } from "./knowledge-server.server";
+import { getAssistantSettings, saveAssistantSettings } from "./assistant-settings.server";
+import { createLead, deleteLead, listLeads } from "./leads.server";
 
 const pageContextSchema = z.object({
   pageType: z.enum(["home", "courses", "course", "about", "contact", "platform", "other"]),
@@ -58,4 +60,58 @@ export const askLiliFn = createServerFn({ method: "POST" })
       ...result,
       knowledgeSource: bundle.source,
     };
+  });
+
+// ——— إعدادات المساعد ———
+
+const assistantSettingsSchema = z.object({
+  greeting: z.string(),
+  whatsappNumber: z.string(),
+  disclaimer: z.string(),
+  enabled: z.boolean(),
+  leadFormEnabled: z.boolean(),
+  collectEmail: z.boolean(),
+});
+
+/** قراءة عامة — يستخدمها widget المساعد على الموقع. */
+export const getAssistantSettingsFn = createServerFn({ method: "GET" }).handler(async () => {
+  return getAssistantSettings();
+});
+
+export const saveAssistantSettingsFn = createServerFn({ method: "POST" })
+  .validator(z.object({ token: z.string().min(1), settings: assistantSettingsSchema }))
+  .handler(async ({ data }) => {
+    await assertAdminSession(data.token);
+    return saveAssistantSettings(data.settings);
+  });
+
+// ——— العملاء المحتملون (نموذج الزوار) ———
+
+const leadInputSchema = z.object({
+  name: z.string().min(1),
+  phone: z.string().min(1),
+  email: z.string().optional(),
+  courseSlug: z.string().optional(),
+  courseName: z.string().optional(),
+  note: z.string().optional(),
+});
+
+/** إرسال عام — لا يتطلب تسجيل دخول. */
+export const createLeadFn = createServerFn({ method: "POST" })
+  .validator(leadInputSchema)
+  .handler(async ({ data }) => createLead(data));
+
+export const listLeadsFn = createServerFn({ method: "GET" })
+  .validator(z.object({ token: z.string().min(1) }))
+  .handler(async ({ data }) => {
+    await assertAdminSession(data.token);
+    return listLeads();
+  });
+
+export const deleteLeadFn = createServerFn({ method: "POST" })
+  .validator(z.object({ token: z.string().min(1), id: z.string().min(1) }))
+  .handler(async ({ data }) => {
+    await assertAdminSession(data.token);
+    await deleteLead(data.id);
+    return { ok: true as const };
   });

@@ -26,6 +26,7 @@ import { Route as CoursesBeautyPhotographyRouteImport } from './routes/courses/b
 import { Route as CoursesSlugRouteImport } from './routes/courses/$slug'
 import { Route as AdminLoginRouteImport } from './routes/admin/login'
 import { Route as AdminInstructorsRouteImport } from './routes/admin/instructors'
+import { Route as AdminAssistantRouteImport } from './routes/admin/assistant'
 import { Route as AdminCoursesIndexRouteImport } from './routes/admin/courses/index'
 import { Route as AdminCoursesNewRouteImport } from './routes/admin/courses/new'
 import { Route as AdminCoursesSlugRouteImport } from './routes/admin/courses/$slug'
@@ -118,6 +119,11 @@ const AdminInstructorsRoute = AdminInstructorsRouteImport.update({
   path: '/admin/instructors',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminAssistantRoute = AdminAssistantRouteImport.update({
+  id: '/admin/assistant',
+  path: '/admin/assistant',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminCoursesIndexRoute = AdminCoursesIndexRouteImport.update({
   id: '/admin/courses/',
   path: '/admin/courses/',
@@ -136,6 +142,7 @@ const AdminCoursesSlugRoute = AdminCoursesSlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin/assistant': typeof AdminAssistantRoute
   '/admin/instructors': typeof AdminInstructorsRoute
   '/admin/login': typeof AdminLoginRoute
   '/courses/$slug': typeof CoursesSlugRoute
@@ -158,6 +165,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin/assistant': typeof AdminAssistantRoute
   '/admin/instructors': typeof AdminInstructorsRoute
   '/admin/login': typeof AdminLoginRoute
   '/courses/$slug': typeof CoursesSlugRoute
@@ -181,6 +189,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin/assistant': typeof AdminAssistantRoute
   '/admin/instructors': typeof AdminInstructorsRoute
   '/admin/login': typeof AdminLoginRoute
   '/courses/$slug': typeof CoursesSlugRoute
@@ -205,6 +214,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin/assistant'
     | '/admin/instructors'
     | '/admin/login'
     | '/courses/$slug'
@@ -227,6 +237,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin/assistant'
     | '/admin/instructors'
     | '/admin/login'
     | '/courses/$slug'
@@ -249,6 +260,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/admin/assistant'
     | '/admin/instructors'
     | '/admin/login'
     | '/courses/$slug'
@@ -272,6 +284,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminAssistantRoute: typeof AdminAssistantRoute
   AdminInstructorsRoute: typeof AdminInstructorsRoute
   AdminLoginRoute: typeof AdminLoginRoute
   CoursesSlugRoute: typeof CoursesSlugRoute
@@ -414,6 +427,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminInstructorsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/assistant': {
+      id: '/admin/assistant'
+      path: '/admin/assistant'
+      fullPath: '/admin/assistant'
+      preLoaderRoute: typeof AdminAssistantRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/courses/': {
       id: '/admin/courses/'
       path: '/admin/courses'
@@ -440,6 +460,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminAssistantRoute: AdminAssistantRoute,
   AdminInstructorsRoute: AdminInstructorsRoute,
   AdminLoginRoute: AdminLoginRoute,
   CoursesSlugRoute: CoursesSlugRoute,

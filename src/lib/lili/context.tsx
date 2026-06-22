@@ -20,14 +20,35 @@ import { LILI_DISCLAIMER, LILI_OPENING } from "./constants";
 import { enrichPageContext, resolvePageContext } from "./page-context";
 import { getQuickReplies } from "./quick-replies";
 import { createAssistantMessage } from "./responder";
-import { askLiliFn, getLiliKnowledgeFn } from "./actions.server";
-import { handoffAction } from "./actions";
+import {
+  askLiliFn,
+  createLeadFn,
+  getAssistantSettingsFn,
+  getLiliKnowledgeFn,
+} from "./actions.server";
+import { courseActions, handoffAction } from "./actions";
+import { buildCourseBriefing } from "./briefing";
 import { sanitizeUserInput } from "./guardrails";
 import { liliAnalytics } from "./analytics";
 import { liliStorage } from "./storage";
 import { liliTts } from "./tts";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
-import type { CourseKnowledge, LiliKnowledgeBundle } from "@/types/lili";
+import { DEFAULT_ASSISTANT_SETTINGS } from "./assistant-settings.defaults";
+import type {
+  AssistantSettings,
+  CourseKnowledge,
+  LeadInput,
+  LiliKnowledgeBundle,
+} from "@/types/lili";
+
+export type CourseOption = { slug: string; title: string };
+
+export type IntakeSubmission = {
+  name: string;
+  phone: string;
+  email?: string;
+  courseSlug: string;
+};
 
 type LiliContextValue = {
   open: boolean;
@@ -48,6 +69,10 @@ type LiliContextValue = {
   showFeedback: boolean;
   teaserVisible: boolean;
   dismissTeaser: () => void;
+  settings: AssistantSettings;
+  assistantEnabled: boolean;
+  courses: CourseOption[];
+  startCourseBriefing: (submission: IntakeSubmission) => void;
 };
 
 const LiliContext = createContext<LiliContextValue | null>(null);
@@ -72,8 +97,14 @@ export function LiliProvider({ children }: { children: ReactNode }) {
   const [teaserVisible, setTeaserVisible] = useState(false);
   const [started, setStarted] = useState(false);
   const [knowledgeBundle, setKnowledgeBundle] = useState<LiliKnowledgeBundle | null>(null);
+  const [settings, setSettings] = useState<AssistantSettings>(DEFAULT_ASSISTANT_SETTINGS);
+  const [userName, setUserName] = useState<string>();
 
   const knowledge: CourseKnowledge[] = knowledgeBundle?.courses ?? [];
+  const courses: CourseOption[] = useMemo(
+    () => knowledge.map((c) => ({ slug: c.slug, title: c.title })),
+    [knowledge],
+  );
 
   const refreshKnowledge = useCallback(async () => {
     try {
@@ -84,12 +115,25 @@ export function LiliProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  const refreshSettings = useCallback(async () => {
+    try {
+      const next = await getAssistantSettingsFn();
+      setSettings(next);
+    } catch {
+      setSettings(DEFAULT_ASSISTANT_SETTINGS);
+    }
+  }, []);
+
   useEffect(() => {
     void refreshKnowledge();
-    const onUpdate = () => void refreshKnowledge();
+    void refreshSettings();
+    const onUpdate = () => {
+      void refreshKnowledge();
+      void refreshSettings();
+    };
     window.addEventListener("bm-admin-updated", onUpdate);
     return () => window.removeEventListener("bm-admin-updated", onUpdate);
-  }, [refreshKnowledge]);
+  }, [refreshKnowledge, refreshSettings]);
   const pageContext = useMemo(() => {
     const ctx = resolvePageContext(pathname, search);
     if (ctx.courseSlug) {
@@ -136,9 +180,9 @@ export function LiliProvider({ children }: { children: ReactNode }) {
     const opening =
       pageContext.pageType === "course" && pageContext.courseName
         ? `حياك الله 🌷 أقدر أساعدك في تفاصيل «${pageContext.courseName}» — السعر، الموعد، أو المحاور.`
-        : LILI_OPENING;
+        : settings.greeting || LILI_OPENING;
     pushAssistant(opening);
-  }, [started, pageContext, pushAssistant]);
+  }, [started, pageContext, pushAssistant, settings.greeting]);
 
   useEffect(() => {
     if (open) startIfNeeded();
@@ -168,7 +212,7 @@ export function LiliProvider({ children }: { children: ReactNode }) {
       void (async () => {
         try {
           const result = await askLiliFn({
-            data: { text, pageContext, recommend },
+            data: { text, pageContext, recommend, userName },
           });
           setRecommend(result.recommend);
           if (result.unanswered) {
@@ -191,7 +235,7 @@ export function LiliProvider({ children }: { children: ReactNode }) {
         }
       })();
     },
-    [dismissTeaser, started, startIfNeeded, pageContext, recommend, pushAssistant],
+    [dismissTeaser, started, startIfNeeded, pageContext, recommend, pushAssistant, userName],
   );
 
   const runAction = useCallback(
@@ -252,6 +296,63 @@ export function LiliProvider({ children }: { children: ReactNode }) {
     [knowledge, pushAssistant],
   );
 
+  const startCourseBriefing = useCallback(
+    (submission: IntakeSubmission) => {
+      const course = knowledge.find((c) => c.slug === submission.courseSlug);
+      const courseName = course?.title ?? submission.courseSlug;
+
+      setUserName(submission.name);
+      setStarted(true);
+      setOpen(true);
+      dismissTeaser();
+      liliAnalytics.track({ type: "conversation_start" });
+      if (submission.courseSlug) {
+        liliAnalytics.track({ type: "course_query", slug: submission.courseSlug });
+      }
+
+      // حفظ بيانات الزائر (قاعدة البيانات + نسخة محلية احتياطية).
+      const lead: LeadInput = {
+        name: submission.name,
+        phone: submission.phone,
+        email: submission.email,
+        courseSlug: submission.courseSlug,
+        courseName,
+      };
+      void createLeadFn({ data: lead }).catch(() => {});
+      try {
+        const prev = JSON.parse(localStorage.getItem("bm_lili_leads") ?? "[]") as LeadInput[];
+        localStorage.setItem("bm_lili_leads", JSON.stringify([lead, ...prev].slice(0, 100)));
+      } catch {
+        /* تجاهل أخطاء التخزين المحلي */
+      }
+
+      if (course) {
+        pushAssistant(buildCourseBriefing(course, submission.name, settings.disclaimer), {
+          actions: courseActions(course),
+          cards: [
+            {
+              type: "course",
+              courseId: course.slug,
+              title: course.title,
+              description: course.shortDescription.slice(0, 120),
+              level: course.level,
+              scheduleLabel: course.scheduleLabel,
+              priceLabel: course.priceLabel,
+              image: course.heroImage,
+              url: course.registrationUrl,
+            },
+          ],
+        });
+      } else {
+        pushAssistant(
+          `أهلًا ${submission.name} 🌷 سعدنا باهتمامك بـ«${courseName}». فريق بيت المصور بيتواصل معك بأقرب وقت لتزويدك بكل التفاصيل.`,
+          { actions: [handoffAction()] },
+        );
+      }
+    },
+    [knowledge, dismissTeaser, pushAssistant, settings.disclaimer],
+  );
+
   const submitFeedback = useCallback((value: LiliFeedback) => {
     liliAnalytics.track({ type: "feedback", value });
     setShowFeedback(false);
@@ -285,6 +386,10 @@ export function LiliProvider({ children }: { children: ReactNode }) {
     showFeedback,
     teaserVisible,
     dismissTeaser,
+    settings,
+    assistantEnabled: settings.enabled,
+    courses,
+    startCourseBriefing,
   };
 
   return <LiliContext.Provider value={value}>{children}</LiliContext.Provider>;

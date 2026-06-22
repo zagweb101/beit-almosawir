@@ -45,6 +45,17 @@ export default function AdminShell({
               المدربون
             </Link>
             <Link
+              to="/admin/assistant"
+              className={cn(
+                "px-3 py-2 rounded-md text-sm border min-h-10 inline-flex items-center",
+                pathname.startsWith("/admin/assistant")
+                  ? "bg-primary/15 border-primary/40"
+                  : "border-border/60 text-muted-foreground",
+              )}
+            >
+              المساعد الذكي
+            </Link>
+            <Link
               to="/"
               className="px-3 py-2 rounded-md text-sm border border-border/60 min-h-10 inline-flex items-center"
             >

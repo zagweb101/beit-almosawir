@@ -60,6 +60,30 @@ model Instructor {
   @@index([active])
 }
 
+model AssistantSettings {
+  id             String   @id @default("default")
+  greeting       String   @default("")
+  whatsappNumber String   @default("")
+  disclaimer     String   @default("")
+  enabled        Boolean  @default(true)
+  leadFormEnabled Boolean @default(true)
+  collectEmail   Boolean  @default(true)
+  updatedAt      DateTime @updatedAt
+}
+
+model Lead {
+  id         String   @id @default(cuid())
+  name       String
+  phone      String
+  email      String?
+  courseSlug String?
+  courseName String?
+  note       String?
+  createdAt  DateTime @default(now())
+
+  @@index([createdAt])
+}
+
 model KnowledgeChunk {
   id         String   @id @default(cuid())
   sourceType String

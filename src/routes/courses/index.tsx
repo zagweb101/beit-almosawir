@@ -4,6 +4,7 @@ import { useCourseCatalog } from "@/lib/admin/context";
 import { SITE } from "@/lib/site-config";
 import { useT } from "@/lib/i18n";
 import CourseCatalogCard from "@/components/course/CourseCatalogCard";
+import LiliIntakeForm from "@/components/ask-lili/lili-intake-form";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -91,6 +92,8 @@ function CoursesIndexPage() {
           {t.coursesPage.lead}
         </p>
         <div className="divider-brand my-8 md:my-10" />
+
+        <LiliIntakeForm className="mb-10" />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6 min-w-0">
           {catalog.map((entry) => (

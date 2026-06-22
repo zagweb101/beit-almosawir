@@ -10,7 +10,9 @@ import LiliLeadForm from "./lili-lead-form";
 import LiliFeedback from "./lili-feedback";
 
 export default function LiliWidget() {
-  const { open, setOpen, teaserVisible, dismissTeaser } = useLili();
+  const { open, setOpen, teaserVisible, dismissTeaser, assistantEnabled } = useLili();
+
+  if (!assistantEnabled) return null;
 
   return (
     <>

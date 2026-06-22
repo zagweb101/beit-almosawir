@@ -117,6 +117,29 @@ export type LiliLeadPayload = {
   privacyAccepted: boolean;
 };
 
+export type AssistantSettings = {
+  greeting: string;
+  whatsappNumber: string;
+  disclaimer: string;
+  enabled: boolean;
+  leadFormEnabled: boolean;
+  collectEmail: boolean;
+};
+
+export type LeadInput = {
+  name: string;
+  phone: string;
+  email?: string;
+  courseSlug?: string;
+  courseName?: string;
+  note?: string;
+};
+
+export type LeadRecord = LeadInput & {
+  id: string;
+  createdAt: string;
+};
+
 export type LiliAnalyticsSnapshot = {
   conversations: number;
   messages: number;
