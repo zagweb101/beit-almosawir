@@ -4,7 +4,7 @@ import LiliMessage from "./lili-message";
 import { LILI_DISCLAIMER } from "@/lib/lili/constants";
 
 export default function LiliMessages() {
-  const { messages, isTyping } = useLili();
+  const { messages, isTyping, settings } = useLili();
   const endRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -16,7 +16,9 @@ export default function LiliMessages() {
       {messages.map((m) => (
         <LiliMessage key={m.id} message={m} />
       ))}
-      {isTyping ? <div className="text-xs text-muted-foreground px-2">لي لي تكتب الآن…</div> : null}
+      {isTyping ? (
+        <div className="text-xs text-muted-foreground px-2">{settings.assistantName} تكتب الآن…</div>
+      ) : null}
       <p className="text-[10px] text-muted-foreground text-center px-2 pt-2">{LILI_DISCLAIMER}</p>
       <div ref={endRef} />
     </div>

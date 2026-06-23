@@ -212,7 +212,7 @@ export function LiliProvider({ children }: { children: ReactNode }) {
       void (async () => {
         try {
           const result = await askLiliFn({
-            data: { text, pageContext, recommend, userName },
+            data: { text, pageContext, recommend, userName, assistantName: settings.assistantName },
           });
           setRecommend(result.recommend);
           if (result.unanswered) {
@@ -235,7 +235,16 @@ export function LiliProvider({ children }: { children: ReactNode }) {
         }
       })();
     },
-    [dismissTeaser, started, startIfNeeded, pageContext, recommend, pushAssistant, userName],
+    [
+      dismissTeaser,
+      started,
+      startIfNeeded,
+      pageContext,
+      recommend,
+      pushAssistant,
+      userName,
+      settings.assistantName,
+    ],
   );
 
   const runAction = useCallback(

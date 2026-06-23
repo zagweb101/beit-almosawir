@@ -1,18 +1,13 @@
-import liliAvatarImg from "@/assets/lili-avatar.png";
-import { cn } from "@/lib/utils";
+import { useLili } from "@/lib/lili/context";
+import { AssistantAvatar } from "@/lib/lili/avatars";
 
 export default function LiliAvatar({ className = "size-10" }: { className?: string }) {
+  const { settings } = useLili();
   return (
-    <img
-      src={liliAvatarImg}
-      alt="لي لي — المساعد الذكي لبيت المصور"
-      className={cn(
-        "rounded-full object-cover object-[center_12%] aspect-square shrink-0",
-        "ring-2 ring-white/15 bg-black/40",
-        className,
-      )}
-      loading="lazy"
-      decoding="async"
+    <AssistantAvatar
+      avatar={settings.avatar}
+      name={settings.assistantName}
+      className={className}
     />
   );
 }

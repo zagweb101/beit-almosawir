@@ -79,6 +79,8 @@ model Instructor {
 
 model AssistantSettings {
   id             String   @id @default("default")
+  assistantName  String   @default("لي لي")
+  avatar         String   @default("")
   greeting       String   @default("")
   whatsappNumber String   @default("")
   disclaimer     String   @default("")

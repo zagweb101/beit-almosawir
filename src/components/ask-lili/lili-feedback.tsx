@@ -1,12 +1,12 @@
 import { useLili } from "@/lib/lili/context";
 
 export default function LiliFeedback() {
-  const { showFeedback, submitFeedback } = useLili();
+  const { showFeedback, submitFeedback, settings } = useLili();
   if (!showFeedback) return null;
 
   return (
     <div className="px-3 pb-2 text-center space-y-2">
-      <p className="text-xs text-muted-foreground">هل كانت إجابة لي لي مفيدة؟</p>
+      <p className="text-xs text-muted-foreground">هل كانت إجابة {settings.assistantName} مفيدة؟</p>
       <div className="flex justify-center gap-2">
         {(
           [

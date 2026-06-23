@@ -50,11 +50,13 @@ export default function LiliIntakeForm({ className = "" }: { className?: string 
     >
       <div className="flex items-center gap-2 mb-1">
         <Sparkles className="size-5 text-primary" />
-        <h2 className="text-lg sm:text-xl font-bold">تعرّف على دورتك مع المساعد الذكي «لي لي»</h2>
+        <h2 className="text-lg sm:text-xl font-bold">
+          تعرّف على دورتك مع المساعد الذكي «{settings.assistantName}»
+        </h2>
       </div>
       <p className="text-sm text-muted-foreground mb-5">
-        اكتب بياناتك واختر الدورة، وسيعرض لك «لي لي» السعر والموعد والمكان وعدد الأيام وأبرز المحاور
-        فورًا.
+        اكتب بياناتك واختر الدورة، وسيعرض لك «{settings.assistantName}» السعر والموعد والمكان وعدد
+        الأيام وأبرز المحاور فورًا.
       </p>
 
       <form onSubmit={onSubmit} className="grid sm:grid-cols-2 gap-4">

@@ -43,6 +43,7 @@ export const askLiliFn = createServerFn({ method: "POST" })
       pageContext: pageContextSchema,
       recommend: recommendSchema,
       userName: z.string().optional(),
+      assistantName: z.string().optional(),
     }),
   )
   .handler(async ({ data }) => {
@@ -55,6 +56,7 @@ export const askLiliFn = createServerFn({ method: "POST" })
       pageContext: data.pageContext as ChatPageContext,
       recommend: data.recommend as RecommendState,
       userName: data.userName,
+      assistantName: data.assistantName,
     });
     return {
       ...result,
@@ -65,6 +67,8 @@ export const askLiliFn = createServerFn({ method: "POST" })
 // ——— إعدادات المساعد ———
 
 const assistantSettingsSchema = z.object({
+  assistantName: z.string(),
+  avatar: z.string(),
   greeting: z.string(),
   whatsappNumber: z.string(),
   disclaimer: z.string(),

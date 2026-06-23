@@ -118,6 +118,8 @@ export type LiliLeadPayload = {
 };
 
 export type AssistantSettings = {
+  assistantName: string;
+  avatar: string;
   greeting: string;
   whatsappNumber: string;
   disclaimer: string;

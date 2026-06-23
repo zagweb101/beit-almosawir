@@ -10,7 +10,7 @@ import LiliLeadForm from "./lili-lead-form";
 import LiliFeedback from "./lili-feedback";
 
 export default function LiliWidget() {
-  const { open, setOpen, teaserVisible, dismissTeaser, assistantEnabled } = useLili();
+  const { open, setOpen, teaserVisible, dismissTeaser, assistantEnabled, settings } = useLili();
 
   if (!assistantEnabled) return null;
 
@@ -32,7 +32,7 @@ export default function LiliWidget() {
       {open ? (
         <div
           role="dialog"
-          aria-label="محادثة لي لي"
+          aria-label={`محادثة ${settings.assistantName}`}
           className={cn(
             "fixed z-[70] flex flex-col bg-background border border-border/50 shadow-2xl overflow-hidden",
             "inset-0 sm:inset-auto sm:bottom-6 sm:start-6 sm:w-[min(100vw-2rem,24rem)] sm:h-[min(85vh,640px)] sm:rounded-2xl",
@@ -56,10 +56,10 @@ export default function LiliWidget() {
           "bg-[image:var(--gradient-brand)] text-primary-foreground shadow-lg hover:opacity-95 transition-opacity",
         )}
         aria-expanded={open}
-        aria-label="اسأل لي لي"
+        aria-label={`اسأل ${settings.assistantName}`}
       >
         <LiliAvatar className="size-10" />
-        <span className="text-sm font-semibold hidden sm:inline">اسأل لي لي</span>
+        <span className="text-sm font-semibold hidden sm:inline">اسأل {settings.assistantName}</span>
         <MessageCircle className="size-5 sm:hidden" />
       </button>
     </>

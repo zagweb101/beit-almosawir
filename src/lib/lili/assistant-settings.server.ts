@@ -10,6 +10,8 @@ export { DEFAULT_ASSISTANT_SETTINGS };
 let memorySettings: AssistantSettings | null = null;
 
 type SettingsRow = {
+  assistantName: string;
+  avatar: string;
   greeting: string;
   whatsappNumber: string;
   disclaimer: string;
@@ -20,6 +22,8 @@ type SettingsRow = {
 
 function rowToSettings(row: SettingsRow): AssistantSettings {
   return {
+    assistantName: row.assistantName || DEFAULT_ASSISTANT_SETTINGS.assistantName,
+    avatar: row.avatar ?? "",
     greeting: row.greeting || DEFAULT_ASSISTANT_SETTINGS.greeting,
     whatsappNumber: row.whatsappNumber || DEFAULT_ASSISTANT_SETTINGS.whatsappNumber,
     disclaimer: row.disclaimer || DEFAULT_ASSISTANT_SETTINGS.disclaimer,
@@ -46,6 +50,8 @@ export async function saveAssistantSettings(
   fields: AssistantSettings,
 ): Promise<AssistantSettings> {
   const data: SettingsRow = {
+    assistantName: fields.assistantName.trim() || DEFAULT_ASSISTANT_SETTINGS.assistantName,
+    avatar: fields.avatar.trim(),
     greeting: fields.greeting.trim() || DEFAULT_ASSISTANT_SETTINGS.greeting,
     whatsappNumber: fields.whatsappNumber.trim() || DEFAULT_ASSISTANT_SETTINGS.whatsappNumber,
     disclaimer: fields.disclaimer.trim() || DEFAULT_ASSISTANT_SETTINGS.disclaimer,

@@ -20,6 +20,7 @@ export type RespondParams = {
   pageContext: ChatPageContext;
   recommend: RecommendState;
   userName?: string;
+  assistantName?: string;
 };
 
 export type RespondOutput = {
@@ -148,6 +149,7 @@ function handleRecommendFlow(params: RespondParams): RespondOutput | null {
 export function respond(params: RespondParams): RespondOutput {
   const { text, knowledge, pageContext, userName, chunks } = params;
   const { recommend } = params;
+  const assistantName = params.assistantName?.trim() || "لي لي";
 
   if (isPromptInjection(text)) {
     return { reply: injectionResponse(), recommend };
@@ -191,7 +193,7 @@ export function respond(params: RespondParams): RespondOutput {
       };
     }
     return {
-      reply: `حياك الله${userName ? ` ${userName}` : ""}، أنا لي لي. كيف أقدر أخدمك اليوم؟`,
+      reply: `حياك الله${userName ? ` ${userName}` : ""}، أنا ${assistantName}. كيف أقدر أخدمك اليوم؟`,
       recommend,
     };
   }

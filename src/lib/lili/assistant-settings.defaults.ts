@@ -4,6 +4,8 @@ import type { AssistantSettings } from "@/types/lili";
 
 /** الإعدادات الافتراضية للمساعد — آمنة للعميل (بدون قاعدة بيانات). */
 export const DEFAULT_ASSISTANT_SETTINGS: AssistantSettings = {
+  assistantName: "لي لي",
+  avatar: "",
   greeting: LILI_OPENING,
   whatsappNumber: SITE.whatsappNumber,
   disclaimer: LILI_DISCLAIMER,

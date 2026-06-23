@@ -4,13 +4,13 @@ import LiliVoiceControls from "./lili-voice-controls";
 import { useLili } from "@/lib/lili/context";
 
 export default function LiliHeader() {
-  const { setOpen, newConversation } = useLili();
+  const { setOpen, newConversation, settings } = useLili();
 
   return (
     <div className="flex items-center gap-3 px-3 py-3 border-b border-border/40 bg-gradient-to-l from-primary/10 to-transparent shrink-0">
       <LiliAvatar className="size-11 shrink-0" />
       <div className="flex-1 min-w-0 text-start">
-        <div className="font-bold text-sm">لي لي</div>
+        <div className="font-bold text-sm">{settings.assistantName}</div>
         <div className="text-xs text-muted-foreground truncate">المساعد الذكي لبيت المصور</div>
         <div className="text-[10px] text-primary mt-0.5">● متاحة للمساعدة</div>
       </div>

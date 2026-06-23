@@ -10,6 +10,7 @@ import {
 } from "@/lib/lili/actions.server";
 import { getAdminToken, requireAdminToken } from "@/lib/admin/session";
 import { downloadFile, stampedName, toCsv } from "@/lib/admin/export";
+import { AVATAR_PRESETS, AssistantAvatar } from "@/lib/lili/avatars";
 import type { AssistantSettings, LeadRecord } from "@/types/lili";
 
 export const Route = createFileRoute("/admin/assistant")({
@@ -17,6 +18,8 @@ export const Route = createFileRoute("/admin/assistant")({
 });
 
 const emptySettings: AssistantSettings = {
+  assistantName: "",
+  avatar: "",
   greeting: "",
   whatsappNumber: "",
   disclaimer: "",
@@ -24,6 +27,8 @@ const emptySettings: AssistantSettings = {
   leadFormEnabled: true,
   collectEmail: true,
 };
+
+const NAME_SUGGESTIONS = ["لي لي", "نور", "سراج", "عدسة", "لمسة", "وميض", "ريم", "كادر"];
 
 function AdminAssistantPage() {
   const navigate = useNavigate();
@@ -113,7 +118,64 @@ function AdminAssistantPage() {
         <div className="space-y-10 max-w-3xl">
           {/* الإعدادات */}
           <form onSubmit={onSave} className="space-y-5">
-            <h2 className="font-semibold text-lg">إعدادات «لي لي»</h2>
+            <h2 className="font-semibold text-lg">هوية المساعد</h2>
+
+            <div className="grid sm:grid-cols-2 gap-4">
+              <Field label="اسم المساعد">
+                <input
+                  className="admin-input"
+                  list="assistant-name-suggestions"
+                  value={settings.assistantName}
+                  onChange={(e) => setSettings({ ...settings, assistantName: e.target.value })}
+                  placeholder="لي لي"
+                />
+                <datalist id="assistant-name-suggestions">
+                  {NAME_SUGGESTIONS.map((n) => (
+                    <option key={n} value={n} />
+                  ))}
+                </datalist>
+              </Field>
+              <Field label="صورة مخصّصة (رابط — اختياري)">
+                <input
+                  className="admin-input"
+                  dir="ltr"
+                  value={/^https?:\/\//.test(settings.avatar) ? settings.avatar : ""}
+                  onChange={(e) => setSettings({ ...settings, avatar: e.target.value })}
+                  placeholder="https://…"
+                />
+              </Field>
+            </div>
+
+            <div className="space-y-2">
+              <span className="text-sm font-medium">أو اختر أفاتارًا جاهزًا</span>
+              <div className="flex flex-wrap gap-3">
+                <AvatarChoice
+                  selected={settings.avatar === ""}
+                  onClick={() => setSettings({ ...settings, avatar: "" })}
+                  avatar=""
+                  name="الافتراضية"
+                  label="الافتراضية"
+                />
+                {AVATAR_PRESETS.map((p) => (
+                  <AvatarChoice
+                    key={p.id}
+                    selected={settings.avatar === p.id}
+                    onClick={() =>
+                      setSettings({
+                        ...settings,
+                        avatar: p.id,
+                        assistantName: settings.assistantName.trim() || p.name,
+                      })
+                    }
+                    avatar={p.id}
+                    name={p.name}
+                    label={p.name}
+                  />
+                ))}
+              </div>
+            </div>
+
+            <h2 className="font-semibold text-lg pt-2">رسائل وتواصل</h2>
 
             <Field label="رسالة الترحيب">
               <textarea
@@ -259,6 +321,34 @@ function Field({
       <span className="text-sm font-medium">{label}</span>
       {children}
     </label>
+  );
+}
+
+function AvatarChoice({
+  selected,
+  onClick,
+  avatar,
+  name,
+  label,
+}: {
+  selected: boolean;
+  onClick: () => void;
+  avatar: string;
+  name: string;
+  label: string;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={selected}
+      className={`flex flex-col items-center gap-1 rounded-lg p-2 border ${
+        selected ? "border-primary bg-primary/10" : "border-border/50"
+      }`}
+    >
+      <AssistantAvatar avatar={avatar} name={name} className="size-12" />
+      <span className="text-[11px]">{label}</span>
+    </button>
   );
 }
 
