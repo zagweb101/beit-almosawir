@@ -25,6 +25,7 @@ import { useT } from "@/lib/i18n";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
 import { getPublicTestimonialsFn } from "@/lib/admin/actions.server";
 import TestimonialsSection from "@/components/testimonials/TestimonialsSection";
+import Reveal from "@/components/Reveal";
 import nanliteLogo from "@/assets/partner-nanlite.png";
 import neomLogo from "@/assets/partner-neom.png";
 import ubtLogo from "@/assets/partner-ubt.jpg";
@@ -264,7 +265,7 @@ function Home() {
           <div className="text-sm text-primary tracking-widest mb-3">{h.workKicker}</div>
           <h2 className="text-3xl md:text-5xl font-bold">{h.workTitle}</h2>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <Reveal className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {works.map((w, i) => (
             <div key={i} className="group relative aspect-[3/4] overflow-hidden rounded-xl">
               <img
@@ -277,7 +278,7 @@ function Home() {
               />
             </div>
           ))}
-        </div>
+        </Reveal>
       </section>
 
       {/* ACHIEVEMENTS */}

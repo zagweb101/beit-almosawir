@@ -109,17 +109,22 @@ export default function PayPalCheckout({ courseSlug }: { courseSlug: string }) {
   }
 
   return (
-    <div className="mt-4">
-      <div className="text-xs text-center text-muted-foreground mb-2">
-        أو ادفع وسجّل مباشرة عبر PayPal
-      </div>
-      {note ? <div className="text-[11px] text-center text-muted-foreground mb-2">{note}</div> : null}
-      <div ref={containerRef} />
-      {status === "loading" ? (
-        <div className="text-xs text-center text-muted-foreground">جاري تحميل الدفع…</div>
+    <div className={status === "ready" ? "mt-4" : ""}>
+      {status === "ready" ? (
+        <>
+          <div className="text-xs text-center text-muted-foreground mb-2">
+            أو ادفع وسجّل مباشرة عبر PayPal
+          </div>
+          {note ? (
+            <div className="text-[11px] text-center text-muted-foreground mb-2">{note}</div>
+          ) : null}
+        </>
       ) : null}
+      <div ref={containerRef} />
       {status === "error" ? (
-        <div className="text-xs text-center text-destructive">{note || "تعذّر تحميل الدفع."}</div>
+        <div className="mt-3 text-xs text-center text-destructive">
+          {note || "تعذّر تحميل الدفع."}
+        </div>
       ) : null}
     </div>
   );

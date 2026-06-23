@@ -1,5 +1,6 @@
 import { Star } from "lucide-react";
 import { SITE } from "@/lib/site-config";
+import Reveal from "@/components/Reveal";
 import type { AdminTestimonial } from "@/lib/admin/types";
 
 type FallbackItem = { q: string; n: string; r: string };
@@ -85,8 +86,9 @@ export default function TestimonialsSection({
       ) : null}
       <h3 className="text-2xl md:text-3xl font-bold">{title}</h3>
       <div className="mt-8 grid md:grid-cols-2 gap-5">
-        {items.map((t) => (
-          <figure key={t.id} className="card-elegant rounded-2xl p-8">
+        {items.map((t, i) => (
+          <Reveal as="div" key={t.id} delay={(i % 2) * 120}>
+          <figure className="card-elegant rounded-2xl p-8 h-full">
             <Stars rating={t.rating} />
             <blockquote className="mt-3 text-foreground/90 leading-relaxed">“{t.quote}”</blockquote>
             <figcaption className="mt-5 flex items-center gap-3">
@@ -110,6 +112,7 @@ export default function TestimonialsSection({
               </div>
             </figcaption>
           </figure>
+          </Reveal>
         ))}
       </div>
     </div>
