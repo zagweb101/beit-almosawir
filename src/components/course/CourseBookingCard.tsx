@@ -30,6 +30,7 @@ export default function CourseBookingCard({ course, className, variant = "full" 
       <h3 className="text-lg sm:text-xl font-bold text-gradient break-words">{course.name}</h3>
       <div className="divider-brand my-4 sm:my-5" />
 
+      {/* الحقائق التفصيلية تظهر في النسخة الكاملة فقط — الجوال يعتمد على شريط «الحقائق السريعة» */}
       {!isCompact ? (
         <ul className="space-y-3 text-base">
           <li className="flex items-start gap-2 min-w-0">
@@ -55,48 +56,43 @@ export default function CourseBookingCard({ course, className, variant = "full" 
             </li>
           ) : null}
         </ul>
-      ) : (
-        <div className="space-y-2 text-base">
-          <p className="break-words">
-            {course.trainingType} — {course.location}
-          </p>
-          {course.instructorName ? (
-            <p className="break-words">
-              {course.ui.instructorText}: {course.instructorName}
-            </p>
-          ) : null}
-        </div>
-      )}
+      ) : null}
 
-      <div className={cn("space-y-4", isCompact ? "mt-4" : "mt-5 sm:mt-6")}>
+      <div className={cn("space-y-4", isCompact ? "" : "mt-5 sm:mt-6")}>
         <CurrencySelector />
         <CouponField />
         <div className="rounded-lg border border-border/50 bg-background/40 px-4 py-3 text-sm min-w-0">
           <div className="text-sm course-muted mb-1">{course.ui.priceFieldLabel}</div>
-          <div className="text-base leading-relaxed break-words">{course.priceLabel}</div>
+          <div className="text-base leading-relaxed break-words font-semibold">
+            {course.priceLabel}
+          </div>
           {appliedCoupon ? (
             <div className="mt-2 text-xs text-primary break-words">
               {couponSummary(appliedCoupon, lang)}
             </div>
           ) : null}
         </div>
-        <div className="rounded-lg border border-border/50 bg-background/40 px-4 py-3 text-sm min-w-0">
-          <div className="text-sm course-muted mb-1">{course.ui.scheduleFieldLabel}</div>
-          <div className="text-base break-words">{course.scheduleLabel}</div>
-        </div>
+        {/* الموعد يظهر بالنسخة الكاملة فقط (موجود في «الحقائق السريعة» على الجوال) */}
+        {!isCompact ? (
+          <div className="rounded-lg border border-border/50 bg-background/40 px-4 py-3 text-sm min-w-0">
+            <div className="text-sm course-muted mb-1">{course.ui.scheduleFieldLabel}</div>
+            <div className="text-base break-words">{course.scheduleLabel}</div>
+          </div>
+        ) : null}
       </div>
 
       <a
         href={whatsappUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="btn-hero mt-5 sm:mt-6 w-full inline-flex items-center justify-center gap-2 px-5 py-3 course-btn rounded-md font-semibold text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        className="btn-hero mt-5 sm:mt-6 w-full inline-flex items-center justify-center gap-2 px-5 py-3 course-btn rounded-md font-semibold text-base transition-opacity hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         <MessageCircle className="size-4 shrink-0" />
         <span className="break-words text-center">{course.ui.ctas.booking}</span>
       </a>
 
-      {!isCompact ? <PayPalCheckout courseSlug={course.slug} /> : null}
+      {/* الدفع متاح الآن في الجوال وسطح المكتب */}
+      <PayPalCheckout courseSlug={course.slug} />
 
       {!isCompact && course.booking.limitedSeatsNote ? (
         <p className="mt-4 text-sm text-center course-muted break-words">
