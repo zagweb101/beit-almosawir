@@ -162,7 +162,7 @@
   .course-page {
     overflow-x: clip;
     --course-muted: oklch(0.8 0.03 320);
-    --course-section-y: clamp(2.5rem, 5vw, 4rem);
+    --course-section-y: clamp(3.5rem, 6.5vw, 6rem);
   }
 
   .course-page .course-muted {

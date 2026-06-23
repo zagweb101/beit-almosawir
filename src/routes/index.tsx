@@ -132,7 +132,7 @@ function Home() {
       {/* ABOUT */}
       <section
         id="about"
-        className="container mx-auto px-6 py-24 grid md:grid-cols-2 gap-14 items-center scroll-mt-20"
+        className="container mx-auto px-6 py-24 md:py-36 grid md:grid-cols-2 gap-14 md:gap-20 items-center scroll-mt-20"
       >
         <div>
           <div className="text-sm text-primary tracking-widest mb-3">{a.kicker}</div>
@@ -185,8 +185,8 @@ function Home() {
       </section>
 
       {/* PILLARS */}
-      <section className="container mx-auto px-6 py-16">
-        <div className="grid md:grid-cols-3 gap-6">
+      <section className="container mx-auto px-6 py-20 md:py-28">
+        <div className="grid md:grid-cols-3 gap-6 md:gap-8">
           {h.pillars.map((p, i) => {
             const Icon = [Camera, Users, Award][i];
             return (
@@ -206,7 +206,7 @@ function Home() {
       </section>
 
       {/* SERVICES */}
-      <section id="services" className="container mx-auto px-6 py-24 scroll-mt-20">
+      <section id="services" className="container mx-auto px-6 py-24 md:py-36 scroll-mt-20">
         <div className="text-sm text-primary tracking-widest mb-3">{s.kicker}</div>
         <h2 className="text-3xl md:text-5xl font-bold leading-tight">{s.title}</h2>
         <p className="mt-5 text-muted-foreground max-w-2xl text-lg">{s.lead}</p>
@@ -260,8 +260,8 @@ function Home() {
       </section>
 
       {/* WORK SHOWCASE */}
-      <section className="container mx-auto px-6 py-12">
-        <div className="mb-10">
+      <section className="container mx-auto px-6 py-20 md:py-24">
+        <div className="mb-10 md:mb-14">
           <div className="text-sm text-primary tracking-widest mb-3">{h.workKicker}</div>
           <h2 className="text-3xl md:text-5xl font-bold">{h.workTitle}</h2>
         </div>
@@ -282,7 +282,7 @@ function Home() {
       </section>
 
       {/* ACHIEVEMENTS */}
-      <section id="achievements" className="container mx-auto px-6 py-24 scroll-mt-20">
+      <section id="achievements" className="container mx-auto px-6 py-24 md:py-36 scroll-mt-20">
         <div className="text-sm text-primary tracking-widest mb-3">{ach.kicker}</div>
         <h2 className="text-3xl md:text-5xl font-bold leading-tight">{ach.title}</h2>
         <div className="divider-brand my-10" />
