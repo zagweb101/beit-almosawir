@@ -5,6 +5,8 @@ import { EMPTY_ADMIN_STORE } from "./types";
 function rowToOverride(row: {
   name: string | null;
   priceLabel: string | null;
+  priceAmount: number | null;
+  currency: string | null;
   scheduleLabel: string | null;
   durationDays: number | null;
   totalHours: number | null;
@@ -19,6 +21,8 @@ function rowToOverride(row: {
   return {
     ...(row.name ? { name: row.name } : {}),
     ...(row.priceLabel ? { priceLabel: row.priceLabel } : {}),
+    ...(row.priceAmount != null ? { priceAmount: row.priceAmount } : {}),
+    ...(row.currency ? { currency: row.currency } : {}),
     ...(row.scheduleLabel ? { scheduleLabel: row.scheduleLabel } : {}),
     ...(row.durationDays != null ? { durationDays: row.durationDays } : {}),
     ...(row.totalHours != null ? { totalHours: row.totalHours } : {}),
@@ -48,6 +52,8 @@ export async function readAdminStoreFromDb(): Promise<AdminStore> {
     slug: row.slug,
     name: row.name,
     priceLabel: row.priceLabel,
+    priceAmount: row.priceAmount ?? undefined,
+    currency: row.currency ?? undefined,
     scheduleLabel: row.scheduleLabel,
     durationDays: row.durationDays,
     totalHours: row.totalHours,
@@ -80,6 +86,8 @@ export async function writeAdminStoreToDb(store: AdminStore): Promise<void> {
           slug,
           name: override.name ?? null,
           priceLabel: override.priceLabel ?? null,
+          priceAmount: override.priceAmount ?? null,
+          currency: override.currency ?? null,
           scheduleLabel: override.scheduleLabel ?? null,
           durationDays: override.durationDays ?? null,
           totalHours: override.totalHours ?? null,
@@ -99,6 +107,8 @@ export async function writeAdminStoreToDb(store: AdminStore): Promise<void> {
           slug: course.slug,
           name: course.name,
           priceLabel: course.priceLabel,
+          priceAmount: course.priceAmount ?? null,
+          currency: course.currency ?? null,
           scheduleLabel: course.scheduleLabel,
           durationDays: course.durationDays,
           totalHours: course.totalHours,

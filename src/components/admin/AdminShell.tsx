@@ -67,6 +67,17 @@ export default function AdminShell({
               التقييمات
             </Link>
             <Link
+              to="/admin/orders"
+              className={cn(
+                "px-3 py-2 rounded-md text-sm border min-h-10 inline-flex items-center",
+                pathname.startsWith("/admin/orders")
+                  ? "bg-primary/15 border-primary/40"
+                  : "border-border/60 text-muted-foreground",
+              )}
+            >
+              الطلبات
+            </Link>
+            <Link
               to="/"
               className="px-3 py-2 rounded-md text-sm border border-border/60 min-h-10 inline-flex items-center"
             >

@@ -11,6 +11,8 @@ model CourseOverride {
   slug           String   @id
   name           String?
   priceLabel     String?
+  priceAmount    Int?
+  currency       String?
   scheduleLabel  String?
   durationDays   Int?
   totalHours     Int?
@@ -27,6 +29,8 @@ model CustomCourse {
   slug           String   @id
   name           String
   priceLabel     String
+  priceAmount    Int?
+  currency       String?
   scheduleLabel  String
   durationDays   Int
   totalHours     Int
@@ -88,6 +92,23 @@ model AssistantSettings {
   leadFormEnabled Boolean @default(true)
   collectEmail   Boolean  @default(true)
   updatedAt      DateTime @updatedAt
+}
+
+model Order {
+  id            String   @id @default(cuid())
+  courseSlug    String
+  courseName    String
+  amount        Float
+  currency      String
+  paypalOrderId String?
+  status        String   @default("pending")
+  customerName  String?
+  customerEmail String?
+  customerPhone String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([status, createdAt])
 }
 
 model Lead {

@@ -1,6 +1,8 @@
 export type AdminCourseFields = {
   name: string;
   priceLabel: string;
+  priceAmount?: number;
+  currency?: string;
   scheduleLabel: string;
   durationDays: number;
   totalHours: number;
@@ -39,6 +41,20 @@ export const EMPTY_ADMIN_STORE: AdminStore = {
   overrides: {},
   customCourses: [],
   deletedSlugs: [],
+};
+
+export type AdminOrder = {
+  id: string;
+  courseSlug: string;
+  courseName: string;
+  amount: number;
+  currency: string;
+  paypalOrderId?: string;
+  status: "pending" | "paid" | "failed";
+  customerName?: string;
+  customerEmail?: string;
+  customerPhone?: string;
+  createdAt: string;
 };
 
 export type AdminInstructorFields = {

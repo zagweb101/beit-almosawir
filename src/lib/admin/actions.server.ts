@@ -31,6 +31,8 @@ const tokenSchema = z.object({ token: z.string().min(1) });
 const fieldsSchema = z.object({
   name: z.string().min(1),
   priceLabel: z.string().min(1),
+  priceAmount: z.number().int().nonnegative().optional(),
+  currency: z.string().optional(),
   scheduleLabel: z.string().min(1),
   durationDays: z.number().int().positive(),
   totalHours: z.number().int().positive(),

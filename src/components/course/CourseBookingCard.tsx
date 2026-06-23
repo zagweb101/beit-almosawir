@@ -2,6 +2,7 @@ import { Calendar, Clock, MapPin, MessageCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { CourseLandingData } from "@/types/course";
 import { useCourseWhatsAppUrl } from "@/hooks/use-course-whatsapp-url";
+import PayPalCheckout from "@/components/course/PayPalCheckout";
 import CouponField, { CurrencySelector } from "@/components/platform/CouponField";
 import { useT } from "@/lib/i18n";
 import { couponSummary } from "@/lib/platform/coupon";
@@ -94,6 +95,8 @@ export default function CourseBookingCard({ course, className, variant = "full" 
         <MessageCircle className="size-4 shrink-0" />
         <span className="break-words text-center">{course.ui.ctas.booking}</span>
       </a>
+
+      {!isCompact ? <PayPalCheckout courseSlug={course.slug} /> : null}
 
       {!isCompact && course.booking.limitedSeatsNote ? (
         <p className="mt-4 text-sm text-center course-muted break-words">

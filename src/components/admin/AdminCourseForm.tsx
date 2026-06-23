@@ -40,12 +40,33 @@ export default function AdminCourseForm({
           />
         </Field>
       ) : null}
-      <Field label="السعر">
+      <Field label="السعر (نص للعرض)">
         <input
           className="admin-input"
           value={values.priceLabel}
           onChange={(e) => set("priceLabel", e.target.value)}
         />
+      </Field>
+      <Field label="السعر الرقمي (للدفع أونلاين — فارغ = بدون دفع)">
+        <input
+          className="admin-input"
+          type="number"
+          min={0}
+          value={values.priceAmount ?? ""}
+          onChange={(e) =>
+            set("priceAmount", e.target.value === "" ? undefined : Number(e.target.value))
+          }
+        />
+      </Field>
+      <Field label="عملة السعر الرقمي">
+        <select
+          className="admin-input"
+          value={values.currency ?? "SAR"}
+          onChange={(e) => set("currency", e.target.value)}
+        >
+          <option value="SAR">ريال سعودي (SAR)</option>
+          <option value="USD">دولار أمريكي (USD)</option>
+        </select>
       </Field>
       <Field label="الموعد">
         <input

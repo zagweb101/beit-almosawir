@@ -27,6 +27,7 @@ import { Route as CoursesLightingMasteryRouteImport } from './routes/courses/lig
 import { Route as CoursesBeautyPhotographyRouteImport } from './routes/courses/beauty-photography'
 import { Route as CoursesSlugRouteImport } from './routes/courses/$slug'
 import { Route as AdminTestimonialsRouteImport } from './routes/admin/testimonials'
+import { Route as AdminOrdersRouteImport } from './routes/admin/orders'
 import { Route as AdminLoginRouteImport } from './routes/admin/login'
 import { Route as AdminInstructorsRouteImport } from './routes/admin/instructors'
 import { Route as AdminAssistantRouteImport } from './routes/admin/assistant'
@@ -127,6 +128,11 @@ const AdminTestimonialsRoute = AdminTestimonialsRouteImport.update({
   path: '/admin/testimonials',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminOrdersRoute = AdminOrdersRouteImport.update({
+  id: '/admin/orders',
+  path: '/admin/orders',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminLoginRoute = AdminLoginRouteImport.update({
   id: '/admin/login',
   path: '/admin/login',
@@ -165,6 +171,7 @@ export interface FileRoutesByFullPath {
   '/admin/assistant': typeof AdminAssistantRoute
   '/admin/instructors': typeof AdminInstructorsRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/orders': typeof AdminOrdersRoute
   '/admin/testimonials': typeof AdminTestimonialsRoute
   '/courses/$slug': typeof CoursesSlugRoute
   '/courses/beauty-photography': typeof CoursesBeautyPhotographyRoute
@@ -191,6 +198,7 @@ export interface FileRoutesByTo {
   '/admin/assistant': typeof AdminAssistantRoute
   '/admin/instructors': typeof AdminInstructorsRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/orders': typeof AdminOrdersRoute
   '/admin/testimonials': typeof AdminTestimonialsRoute
   '/courses/$slug': typeof CoursesSlugRoute
   '/courses/beauty-photography': typeof CoursesBeautyPhotographyRoute
@@ -218,6 +226,7 @@ export interface FileRoutesById {
   '/admin/assistant': typeof AdminAssistantRoute
   '/admin/instructors': typeof AdminInstructorsRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/orders': typeof AdminOrdersRoute
   '/admin/testimonials': typeof AdminTestimonialsRoute
   '/courses/$slug': typeof CoursesSlugRoute
   '/courses/beauty-photography': typeof CoursesBeautyPhotographyRoute
@@ -246,6 +255,7 @@ export interface FileRouteTypes {
     | '/admin/assistant'
     | '/admin/instructors'
     | '/admin/login'
+    | '/admin/orders'
     | '/admin/testimonials'
     | '/courses/$slug'
     | '/courses/beauty-photography'
@@ -272,6 +282,7 @@ export interface FileRouteTypes {
     | '/admin/assistant'
     | '/admin/instructors'
     | '/admin/login'
+    | '/admin/orders'
     | '/admin/testimonials'
     | '/courses/$slug'
     | '/courses/beauty-photography'
@@ -298,6 +309,7 @@ export interface FileRouteTypes {
     | '/admin/assistant'
     | '/admin/instructors'
     | '/admin/login'
+    | '/admin/orders'
     | '/admin/testimonials'
     | '/courses/$slug'
     | '/courses/beauty-photography'
@@ -325,6 +337,7 @@ export interface RootRouteChildren {
   AdminAssistantRoute: typeof AdminAssistantRoute
   AdminInstructorsRoute: typeof AdminInstructorsRoute
   AdminLoginRoute: typeof AdminLoginRoute
+  AdminOrdersRoute: typeof AdminOrdersRoute
   AdminTestimonialsRoute: typeof AdminTestimonialsRoute
   CoursesSlugRoute: typeof CoursesSlugRoute
   CoursesBeautyPhotographyRoute: typeof CoursesBeautyPhotographyRoute
@@ -473,6 +486,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminTestimonialsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/orders': {
+      id: '/admin/orders'
+      path: '/admin/orders'
+      fullPath: '/admin/orders'
+      preLoaderRoute: typeof AdminOrdersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/login': {
       id: '/admin/login'
       path: '/admin/login'
@@ -525,6 +545,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminAssistantRoute: AdminAssistantRoute,
   AdminInstructorsRoute: AdminInstructorsRoute,
   AdminLoginRoute: AdminLoginRoute,
+  AdminOrdersRoute: AdminOrdersRoute,
   AdminTestimonialsRoute: AdminTestimonialsRoute,
   CoursesSlugRoute: CoursesSlugRoute,
   CoursesBeautyPhotographyRoute: CoursesBeautyPhotographyRoute,

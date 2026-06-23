@@ -44,17 +44,22 @@ export async function listCourses(token: string) {
   await assertAdminSession(token);
   const catalog = await mergedCatalog("ar");
   const store = await readAdminStore();
-  return catalog.map((entry) => ({
-    ...courseToAdminRow(entry),
-    source: store.customCourses.some((c) => c.slug === entry.course.slug)
-      ? ("custom" as const)
-      : BUILTIN_SLUGS.has(entry.course.slug)
-        ? ("builtin" as const)
-        : ("custom" as const),
-    updatedAt:
-      store.overrides[entry.course.slug]?.updatedAt ??
-      store.customCourses.find((c) => c.slug === entry.course.slug)?.updatedAt,
-  }));
+  return catalog.map((entry) => {
+    const slug = entry.course.slug;
+    const custom = store.customCourses.find((c) => c.slug === slug);
+    const override = store.overrides[slug];
+    return {
+      ...courseToAdminRow(entry),
+      priceAmount: custom?.priceAmount ?? override?.priceAmount,
+      currency: custom?.currency ?? override?.currency,
+      source: custom
+        ? ("custom" as const)
+        : BUILTIN_SLUGS.has(slug)
+          ? ("builtin" as const)
+          : ("custom" as const),
+      updatedAt: override?.updatedAt ?? custom?.updatedAt,
+    };
+  });
 }
 
 export async function getCourse(token: string, slug: string) {
@@ -63,11 +68,13 @@ export async function getCourse(token: string, slug: string) {
   const entry = catalog.find((e) => e.course.slug === slug);
   if (!entry) throw new Error("NOT_FOUND");
   const store = await readAdminStore();
+  const custom = store.customCourses.find((c) => c.slug === slug);
+  const override = store.overrides[slug];
   return {
     ...courseToAdminRow(entry),
-    source: store.customCourses.some((c) => c.slug === slug)
-      ? ("custom" as const)
-      : ("builtin" as const),
+    priceAmount: custom?.priceAmount ?? override?.priceAmount,
+    currency: custom?.currency ?? override?.currency,
+    source: custom ? ("custom" as const) : ("builtin" as const),
   };
 }
 
