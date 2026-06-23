@@ -196,6 +196,17 @@ function Footer() {
         <p className="text-foreground/80 text-sm sm:text-base leading-relaxed max-w-xl break-words px-2">
           {t.footer.tagline}
         </p>
+        <nav className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm text-muted-foreground">
+          <Link to="/courses" className="hover:text-foreground transition-colors">
+            {t.nav.courses}
+          </Link>
+          <Link to="/privacy" className="hover:text-foreground transition-colors">
+            سياسة الخصوصية
+          </Link>
+          <Link to="/terms" className="hover:text-foreground transition-colors">
+            الشروط والأحكام
+          </Link>
+        </nav>
       </div>
       <div className="border-t border-border/40 py-5 text-center text-xs text-muted-foreground">
         © {new Date().getFullYear()} {t.brand.name} — {t.footer.rights}

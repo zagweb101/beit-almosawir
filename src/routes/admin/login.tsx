@@ -25,8 +25,15 @@ function AdminLoginPage() {
       const { token } = await adminLoginFn({ data: { password } });
       setAdminToken(token);
       void navigate({ to: "/admin/courses" });
-    } catch {
-      setError("كلمة المرور غير صحيحة.");
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "";
+      if (message.includes("RATE_LIMITED")) {
+        const seconds = Number(message.split(":")[1]) || 0;
+        const minutes = Math.ceil(seconds / 60);
+        setError(`محاولات كثيرة فاشلة. حاول مجددًا بعد ${minutes} دقيقة.`);
+      } else {
+        setError("كلمة المرور غير صحيحة.");
+      }
     } finally {
       setLoading(false);
     }

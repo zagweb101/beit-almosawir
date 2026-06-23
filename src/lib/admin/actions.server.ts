@@ -18,6 +18,12 @@ import {
   updateTestimonialForAdmin,
 } from "./handlers.server";
 import { readAdminStore } from "./store.server";
+import {
+  checkLoginRateLimit,
+  clearLoginAttempts,
+  getClientIp,
+  recordLoginFailure,
+} from "./rate-limit.server";
 import type { AdminStore } from "./types";
 
 const tokenSchema = z.object({ token: z.string().min(1) });
@@ -39,7 +45,19 @@ const fieldsSchema = z.object({
 export const adminLoginFn = createServerFn({ method: "POST" })
   .validator(z.object({ password: z.string() }))
   .handler(async ({ data }) => {
-    return loginAdmin(data.password);
+    const ip = getClientIp();
+    const limit = checkLoginRateLimit(ip);
+    if (!limit.allowed) {
+      throw new Error(`RATE_LIMITED:${limit.retryAfterSec}`);
+    }
+    try {
+      const result = await loginAdmin(data.password);
+      clearLoginAttempts(ip);
+      return result;
+    } catch (error) {
+      recordLoginFailure(ip);
+      throw error;
+    }
   });
 
 export const getPublicAdminStoreFn = createServerFn({ method: "GET" }).handler(async () => {

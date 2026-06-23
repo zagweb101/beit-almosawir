@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { hasDatabase, prisma } from "@/lib/db/prisma.server";
+import { notifyNewLead } from "./notifications.server";
 import type { LeadInput, LeadRecord } from "@/types/lili";
 
 // احتياطي في الذاكرة عند غياب قاعدة البيانات (تطوير محلي).
@@ -49,7 +50,9 @@ export async function createLead(input: LeadInput): Promise<LeadRecord> {
   if (hasDatabase()) {
     try {
       const row = await prisma.lead.create({ data });
-      return rowToLead(row);
+      const lead = rowToLead(row);
+      void notifyNewLead(lead);
+      return lead;
     } catch (error) {
       console.error("[leads] DB create failed, using memory:", error);
     }
@@ -66,6 +69,7 @@ export async function createLead(input: LeadInput): Promise<LeadRecord> {
     createdAt: new Date().toISOString(),
   };
   memoryLeads.set(lead.id, lead);
+  void notifyNewLead(lead);
   return lead;
 }
 

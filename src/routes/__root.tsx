@@ -9,6 +9,7 @@ import {
 } from "@tanstack/react-router";
 
 import appCss from "../styles.css?url";
+import Analytics from "@/components/Analytics";
 import SiteLayout from "@/components/SiteLayout";
 import { LanguageProvider } from "@/lib/i18n";
 import { PlatformProvider } from "@/lib/platform/context";
@@ -124,6 +125,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         {children}
+        <Analytics />
         <Scripts />
       </body>
     </html>
