@@ -3,14 +3,19 @@ import { z } from "zod";
 import {
   createCourse,
   createInstructorForAdmin,
+  createTestimonialForAdmin,
   deleteCourse,
   deleteInstructorForAdmin,
+  deleteTestimonialForAdmin,
+  getActiveTestimonials,
   getCourse,
   listCourses,
   listInstructorsForAdmin,
+  listTestimonialsForAdmin,
   loginAdmin,
   saveCourse,
   updateInstructorForAdmin,
+  updateTestimonialForAdmin,
 } from "./handlers.server";
 import { readAdminStore } from "./store.server";
 import type { AdminStore } from "./types";
@@ -105,5 +110,43 @@ export const deleteAdminInstructorFn = createServerFn({ method: "POST" })
   .validator(tokenSchema.extend({ id: z.string().min(1) }))
   .handler(async ({ data }) => {
     await deleteInstructorForAdmin(data.token, data.id);
+    return { ok: true as const };
+  });
+
+// ——— التقييمات ———
+
+const testimonialFieldsSchema = z.object({
+  authorName: z.string().min(1),
+  role: z.string(),
+  quote: z.string().min(1),
+  rating: z.number().int().min(1).max(5),
+  photoUrl: z.string().optional(),
+  courseSlug: z.string().optional(),
+  featured: z.boolean(),
+  active: z.boolean(),
+  sortOrder: z.number().int(),
+});
+
+/** قراءة عامة — يستخدمها قسم التقييمات على الموقع. */
+export const getPublicTestimonialsFn = createServerFn({ method: "GET" }).handler(async () => {
+  return getActiveTestimonials();
+});
+
+export const listAdminTestimonialsFn = createServerFn({ method: "GET" })
+  .validator(tokenSchema)
+  .handler(async ({ data }) => listTestimonialsForAdmin(data.token));
+
+export const createAdminTestimonialFn = createServerFn({ method: "POST" })
+  .validator(tokenSchema.extend({ fields: testimonialFieldsSchema }))
+  .handler(async ({ data }) => createTestimonialForAdmin(data.token, data.fields));
+
+export const updateAdminTestimonialFn = createServerFn({ method: "POST" })
+  .validator(tokenSchema.extend({ id: z.string().min(1), fields: testimonialFieldsSchema }))
+  .handler(async ({ data }) => updateTestimonialForAdmin(data.token, data.id, data.fields));
+
+export const deleteAdminTestimonialFn = createServerFn({ method: "POST" })
+  .validator(tokenSchema.extend({ id: z.string().min(1) }))
+  .handler(async ({ data }) => {
+    await deleteTestimonialForAdmin(data.token, data.id);
     return { ok: true as const };
   });

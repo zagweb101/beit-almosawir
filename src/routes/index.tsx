@@ -23,6 +23,8 @@ import {
 } from "lucide-react";
 import { useT } from "@/lib/i18n";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
+import { getPublicTestimonialsFn } from "@/lib/admin/actions.server";
+import TestimonialsSection from "@/components/testimonials/TestimonialsSection";
 import nanliteLogo from "@/assets/partner-nanlite.png";
 import neomLogo from "@/assets/partner-neom.png";
 import ubtLogo from "@/assets/partner-ubt.jpg";
@@ -45,6 +47,13 @@ export const Route = createFileRoute("/")({
       },
     ],
   }),
+  loader: async () => {
+    try {
+      return { testimonials: await getPublicTestimonialsFn() };
+    } catch {
+      return { testimonials: [] };
+    }
+  },
   component: Home,
 });
 
@@ -69,6 +78,7 @@ const logoSurface: Record<LogoTone, string> = {
 
 function Home() {
   const { t, lang } = useT();
+  const { testimonials } = Route.useLoaderData();
   const Arrow = lang === "ar" ? ArrowLeft : ArrowRight;
   const h = t.home;
   const a = t.about;
@@ -328,25 +338,11 @@ function Home() {
           </div>
         </div>
 
-        <div className="mt-16">
-          <h3 className="text-2xl md:text-3xl font-bold">{ach.testimonialsTitle}</h3>
-          <div className="mt-8 grid md:grid-cols-2 gap-5">
-            {ach.testimonials.map((tt) => (
-              <div key={tt.n} className="card-elegant rounded-2xl p-8">
-                <p className="text-foreground/90 leading-relaxed">"{tt.q}"</p>
-                <div className="mt-5 flex items-center gap-3">
-                  <div className="size-10 rounded-full bg-gradient-brand grid place-items-center text-white font-bold">
-                    {tt.n.charAt(0)}
-                  </div>
-                  <div>
-                    <div className="font-semibold">{tt.n}</div>
-                    <div className="text-xs text-muted-foreground">{tt.r}</div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        <TestimonialsSection
+          testimonials={testimonials}
+          title={ach.testimonialsTitle}
+          fallback={ach.testimonials.map((tt) => ({ q: tt.q, n: tt.n, r: tt.r }))}
+        />
 
         <div className="mt-16 card-elegant rounded-2xl p-10 md:p-14">
           <h3 className="text-2xl md:text-3xl font-bold">{ach.visionTitle}</h3>

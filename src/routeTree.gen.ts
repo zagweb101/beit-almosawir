@@ -24,6 +24,7 @@ import { Route as CoursesPhotographyFundamentalsRouteImport } from './routes/cou
 import { Route as CoursesLightingMasteryRouteImport } from './routes/courses/lighting-mastery'
 import { Route as CoursesBeautyPhotographyRouteImport } from './routes/courses/beauty-photography'
 import { Route as CoursesSlugRouteImport } from './routes/courses/$slug'
+import { Route as AdminTestimonialsRouteImport } from './routes/admin/testimonials'
 import { Route as AdminLoginRouteImport } from './routes/admin/login'
 import { Route as AdminInstructorsRouteImport } from './routes/admin/instructors'
 import { Route as AdminAssistantRouteImport } from './routes/admin/assistant'
@@ -109,6 +110,11 @@ const CoursesSlugRoute = CoursesSlugRouteImport.update({
   path: '/courses/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminTestimonialsRoute = AdminTestimonialsRouteImport.update({
+  id: '/admin/testimonials',
+  path: '/admin/testimonials',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminLoginRoute = AdminLoginRouteImport.update({
   id: '/admin/login',
   path: '/admin/login',
@@ -145,6 +151,7 @@ export interface FileRoutesByFullPath {
   '/admin/assistant': typeof AdminAssistantRoute
   '/admin/instructors': typeof AdminInstructorsRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/testimonials': typeof AdminTestimonialsRoute
   '/courses/$slug': typeof CoursesSlugRoute
   '/courses/beauty-photography': typeof CoursesBeautyPhotographyRoute
   '/courses/lighting-mastery': typeof CoursesLightingMasteryRoute
@@ -168,6 +175,7 @@ export interface FileRoutesByTo {
   '/admin/assistant': typeof AdminAssistantRoute
   '/admin/instructors': typeof AdminInstructorsRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/testimonials': typeof AdminTestimonialsRoute
   '/courses/$slug': typeof CoursesSlugRoute
   '/courses/beauty-photography': typeof CoursesBeautyPhotographyRoute
   '/courses/lighting-mastery': typeof CoursesLightingMasteryRoute
@@ -192,6 +200,7 @@ export interface FileRoutesById {
   '/admin/assistant': typeof AdminAssistantRoute
   '/admin/instructors': typeof AdminInstructorsRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/testimonials': typeof AdminTestimonialsRoute
   '/courses/$slug': typeof CoursesSlugRoute
   '/courses/beauty-photography': typeof CoursesBeautyPhotographyRoute
   '/courses/lighting-mastery': typeof CoursesLightingMasteryRoute
@@ -217,6 +226,7 @@ export interface FileRouteTypes {
     | '/admin/assistant'
     | '/admin/instructors'
     | '/admin/login'
+    | '/admin/testimonials'
     | '/courses/$slug'
     | '/courses/beauty-photography'
     | '/courses/lighting-mastery'
@@ -240,6 +250,7 @@ export interface FileRouteTypes {
     | '/admin/assistant'
     | '/admin/instructors'
     | '/admin/login'
+    | '/admin/testimonials'
     | '/courses/$slug'
     | '/courses/beauty-photography'
     | '/courses/lighting-mastery'
@@ -263,6 +274,7 @@ export interface FileRouteTypes {
     | '/admin/assistant'
     | '/admin/instructors'
     | '/admin/login'
+    | '/admin/testimonials'
     | '/courses/$slug'
     | '/courses/beauty-photography'
     | '/courses/lighting-mastery'
@@ -287,6 +299,7 @@ export interface RootRouteChildren {
   AdminAssistantRoute: typeof AdminAssistantRoute
   AdminInstructorsRoute: typeof AdminInstructorsRoute
   AdminLoginRoute: typeof AdminLoginRoute
+  AdminTestimonialsRoute: typeof AdminTestimonialsRoute
   CoursesSlugRoute: typeof CoursesSlugRoute
   CoursesBeautyPhotographyRoute: typeof CoursesBeautyPhotographyRoute
   CoursesLightingMasteryRoute: typeof CoursesLightingMasteryRoute
@@ -413,6 +426,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CoursesSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/testimonials': {
+      id: '/admin/testimonials'
+      path: '/admin/testimonials'
+      fullPath: '/admin/testimonials'
+      preLoaderRoute: typeof AdminTestimonialsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/login': {
       id: '/admin/login'
       path: '/admin/login'
@@ -463,6 +483,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminAssistantRoute: AdminAssistantRoute,
   AdminInstructorsRoute: AdminInstructorsRoute,
   AdminLoginRoute: AdminLoginRoute,
+  AdminTestimonialsRoute: AdminTestimonialsRoute,
   CoursesSlugRoute: CoursesSlugRoute,
   CoursesBeautyPhotographyRoute: CoursesBeautyPhotographyRoute,
   CoursesLightingMasteryRoute: CoursesLightingMasteryRoute,

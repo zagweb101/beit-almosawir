@@ -7,7 +7,12 @@ import {
   createAdminSession,
   verifyAdminPassword,
 } from "@/lib/admin/auth.server";
-import type { AdminCustomCourse, AdminInstructorFields, AdminStore } from "@/lib/admin/types";
+import type {
+  AdminCustomCourse,
+  AdminInstructorFields,
+  AdminStore,
+  AdminTestimonialFields,
+} from "@/lib/admin/types";
 
 export const BUILTIN_SLUGS = new Set([
   "photography-fundamentals",
@@ -174,4 +179,39 @@ export async function deleteInstructorForAdmin(token: string, id: string) {
   await assertAdminSession(token);
   const { deleteInstructor } = await import("./instructors.server");
   await deleteInstructor(id);
+}
+
+// ——— التقييمات ———
+
+export async function listTestimonialsForAdmin(token: string) {
+  await assertAdminSession(token);
+  const { listTestimonials } = await import("./testimonials.server");
+  return listTestimonials();
+}
+
+export async function getActiveTestimonials() {
+  const { listActiveTestimonials } = await import("./testimonials.server");
+  return listActiveTestimonials();
+}
+
+export async function createTestimonialForAdmin(token: string, fields: AdminTestimonialFields) {
+  await assertAdminSession(token);
+  const { createTestimonial } = await import("./testimonials.server");
+  return createTestimonial(fields);
+}
+
+export async function updateTestimonialForAdmin(
+  token: string,
+  id: string,
+  fields: AdminTestimonialFields,
+) {
+  await assertAdminSession(token);
+  const { updateTestimonial } = await import("./testimonials.server");
+  return updateTestimonial(id, fields);
+}
+
+export async function deleteTestimonialForAdmin(token: string, id: string) {
+  await assertAdminSession(token);
+  const { deleteTestimonial } = await import("./testimonials.server");
+  await deleteTestimonial(id);
 }

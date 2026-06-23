@@ -57,6 +57,24 @@ export type AdminInstructor = AdminInstructorFields & {
   updatedAt: string;
 };
 
+export type AdminTestimonialFields = {
+  authorName: string;
+  role: string;
+  quote: string;
+  rating: number;
+  photoUrl?: string;
+  courseSlug?: string;
+  featured: boolean;
+  active: boolean;
+  sortOrder: number;
+};
+
+export type AdminTestimonial = AdminTestimonialFields & {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
 /** خيارات نوع التدريب المعروضة في لوحة الإدارة. */
 export const TRAINING_TYPE_OPTIONS = ["حضوري", "أونلاين", "برايفت"] as const;
 
