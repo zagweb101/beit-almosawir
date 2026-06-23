@@ -94,6 +94,16 @@ model AssistantSettings {
   updatedAt      DateTime @updatedAt
 }
 
+model PaymentSettings {
+  id             String   @id @default("default")
+  paypalClientId String   @default("")
+  paypalSecret   String   @default("")
+  paypalEnv      String   @default("sandbox")
+  currency       String   @default("USD")
+  enabled        Boolean  @default(false)
+  updatedAt      DateTime @updatedAt
+}
+
 model Order {
   id            String   @id @default(cuid())
   courseSlug    String
