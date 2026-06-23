@@ -1,4 +1,4 @@
-import { Calendar, Clock, MapPin, MessageCircle } from "lucide-react";
+import { Award, Calendar, Clock, MapPin, MessageCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { CourseLandingData } from "@/types/course";
 import { useCourseWhatsAppUrl } from "@/hooks/use-course-whatsapp-url";
@@ -19,6 +19,7 @@ export default function CourseBookingCard({ course, className, variant = "full" 
   const { appliedCoupon } = usePlatform();
   const whatsappUrl = useCourseWhatsAppUrl(course);
   const isCompact = variant === "compact";
+  const hasCertificate = course.registrationBenefits?.items?.some((i) => i.text.includes("شهادة"));
 
   return (
     <div
@@ -69,6 +70,11 @@ export default function CourseBookingCard({ course, className, variant = "full" 
           {appliedCoupon ? (
             <div className="mt-2 text-xs text-primary break-words">
               {couponSummary(appliedCoupon, lang)}
+            </div>
+          ) : null}
+          {hasCertificate ? (
+            <div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-primary/30 bg-primary/10 text-xs font-medium">
+              <Award className="size-3.5 text-primary" /> يشمل شهادة حضور معتمدة
             </div>
           ) : null}
         </div>

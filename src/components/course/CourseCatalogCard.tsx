@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowLeft, ArrowRight, Clock, MapPin } from "lucide-react";
+import { ArrowLeft, ArrowRight, Award, Clock, MapPin } from "lucide-react";
 import type { CourseCatalogEntry } from "@/data/courses/catalog";
 import { useT } from "@/lib/i18n";
 
@@ -11,6 +11,9 @@ export default function CourseCatalogCard({ entry }: Props) {
   const { t, lang } = useT();
   const { course, path } = entry;
   const Arrow = lang === "ar" ? ArrowLeft : ArrowRight;
+  const hasCertificate = course.registrationBenefits?.items?.some((i) =>
+    i.text.includes("شهادة"),
+  );
 
   return (
     <article className="course-card card-elegant rounded-2xl overflow-hidden flex flex-col min-w-0 h-full">
@@ -46,10 +49,24 @@ export default function CourseCatalogCard({ entry }: Props) {
           </li>
         </ul>
 
+        <div className="mt-5 pt-4 border-t border-border/40 flex items-center justify-between gap-3 flex-wrap">
+          <div className="min-w-0">
+            <div className="text-xs course-muted">{course.ui.priceFieldLabel}</div>
+            <div className="text-lg font-bold text-gradient break-words leading-tight">
+              {course.priceLabel}
+            </div>
+          </div>
+          {hasCertificate ? (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-primary/30 bg-primary/10 text-xs font-medium shrink-0">
+              <Award className="size-3.5 text-primary" /> يشمل شهادة
+            </span>
+          ) : null}
+        </div>
+
         <Link
           to="/courses/$slug"
           params={{ slug: course.slug }}
-          className="btn-hero mt-5 sm:mt-6 inline-flex w-full items-center justify-center gap-2 px-5 py-3 course-btn rounded-md text-base font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="btn-hero mt-4 inline-flex w-full items-center justify-center gap-2 px-5 py-3 course-btn rounded-md text-base font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           {t.coursesPage.viewCourse}
           <Arrow className="size-4 shrink-0" />
