@@ -52,6 +52,8 @@ export async function listCourses(token: string) {
       ...courseToAdminRow(entry),
       priceAmount: custom?.priceAmount ?? override?.priceAmount,
       currency: custom?.currency ?? override?.currency,
+      startDate: custom?.startDate ?? override?.startDate,
+      endDate: custom?.endDate ?? override?.endDate,
       source: custom
         ? ("custom" as const)
         : BUILTIN_SLUGS.has(slug)
@@ -74,6 +76,8 @@ export async function getCourse(token: string, slug: string) {
     ...courseToAdminRow(entry),
     priceAmount: custom?.priceAmount ?? override?.priceAmount,
     currency: custom?.currency ?? override?.currency,
+    startDate: custom?.startDate ?? override?.startDate,
+    endDate: custom?.endDate ?? override?.endDate,
     source: custom ? ("custom" as const) : ("builtin" as const),
   };
 }

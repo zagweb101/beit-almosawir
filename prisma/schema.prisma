@@ -14,6 +14,8 @@ model CourseOverride {
   priceAmount    Int?
   currency       String?
   scheduleLabel  String?
+  startDate      String?
+  endDate        String?
   durationDays   Int?
   totalHours     Int?
   dailyHours     Int?
@@ -32,6 +34,8 @@ model CustomCourse {
   priceAmount    Int?
   currency       String?
   scheduleLabel  String
+  startDate      String?
+  endDate        String?
   durationDays   Int
   totalHours     Int
   dailyHours     Int

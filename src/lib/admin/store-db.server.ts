@@ -8,6 +8,8 @@ function rowToOverride(row: {
   priceAmount: number | null;
   currency: string | null;
   scheduleLabel: string | null;
+  startDate: string | null;
+  endDate: string | null;
   durationDays: number | null;
   totalHours: number | null;
   dailyHours: number | null;
@@ -24,6 +26,8 @@ function rowToOverride(row: {
     ...(row.priceAmount != null ? { priceAmount: row.priceAmount } : {}),
     ...(row.currency ? { currency: row.currency } : {}),
     ...(row.scheduleLabel ? { scheduleLabel: row.scheduleLabel } : {}),
+    ...(row.startDate ? { startDate: row.startDate } : {}),
+    ...(row.endDate ? { endDate: row.endDate } : {}),
     ...(row.durationDays != null ? { durationDays: row.durationDays } : {}),
     ...(row.totalHours != null ? { totalHours: row.totalHours } : {}),
     ...(row.dailyHours != null ? { dailyHours: row.dailyHours } : {}),
@@ -55,6 +59,8 @@ export async function readAdminStoreFromDb(): Promise<AdminStore> {
     priceAmount: row.priceAmount ?? undefined,
     currency: row.currency ?? undefined,
     scheduleLabel: row.scheduleLabel,
+    startDate: row.startDate ?? undefined,
+    endDate: row.endDate ?? undefined,
     durationDays: row.durationDays,
     totalHours: row.totalHours,
     dailyHours: row.dailyHours,
@@ -89,6 +95,8 @@ export async function writeAdminStoreToDb(store: AdminStore): Promise<void> {
           priceAmount: override.priceAmount ?? null,
           currency: override.currency ?? null,
           scheduleLabel: override.scheduleLabel ?? null,
+          startDate: override.startDate ?? null,
+          endDate: override.endDate ?? null,
           durationDays: override.durationDays ?? null,
           totalHours: override.totalHours ?? null,
           dailyHours: override.dailyHours ?? null,
@@ -110,6 +118,8 @@ export async function writeAdminStoreToDb(store: AdminStore): Promise<void> {
           priceAmount: course.priceAmount ?? null,
           currency: course.currency ?? null,
           scheduleLabel: course.scheduleLabel,
+          startDate: course.startDate ?? null,
+          endDate: course.endDate ?? null,
           durationDays: course.durationDays,
           totalHours: course.totalHours,
           dailyHours: course.dailyHours,

@@ -34,6 +34,8 @@ const fieldsSchema = z.object({
   priceAmount: z.number().int().nonnegative().optional(),
   currency: z.string().optional(),
   scheduleLabel: z.string().min(1),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
   durationDays: z.number().int().positive(),
   totalHours: z.number().int().positive(),
   dailyHours: z.number().int().positive(),

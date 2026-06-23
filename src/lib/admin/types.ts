@@ -4,6 +4,8 @@ export type AdminCourseFields = {
   priceAmount?: number;
   currency?: string;
   scheduleLabel: string;
+  startDate?: string;
+  endDate?: string;
   durationDays: number;
   totalHours: number;
   dailyHours: number;

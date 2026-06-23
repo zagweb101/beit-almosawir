@@ -13,6 +13,7 @@ export const Route = createFileRoute("/admin/courses/new")({
 const defaults: AdminCourseFields & { name: string } = {
   name: "",
   priceLabel: "تواصل معنا لمعرفة السعر",
+  currency: "SAR",
   scheduleLabel: "يُعلن قريبًا",
   durationDays: 3,
   totalHours: 12,
